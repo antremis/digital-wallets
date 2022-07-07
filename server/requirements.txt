@@ -1,0 +1,8 @@
+flask
+flask-cors
+flask-session
+mysql-connector-python
+xrpl-py
+web3
+bit
+bitcoin

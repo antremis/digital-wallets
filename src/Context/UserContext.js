@@ -20,9 +20,9 @@ const UserContextProvider = ({children}) => {
     const getBTC = async () => {
         setStatus("Getting BTC Balance")
         setLoading(true)
-        const balance = await Axios.get("BaseUri/api/btc/balance")
+        const balance = await Axios.get(`${BaseUri}/api/btc/balance`)
         setStatus("Getting BTC History")
-        const history = await Axios.get("BaseUri/api/btc/history")
+        const history = await Axios.get(`${BaseUri}/api/btc/history`)
         console.log(balance, history)
         setBTC({
             balance : balance.data.balance.balance,
@@ -36,9 +36,9 @@ const UserContextProvider = ({children}) => {
     const getETH = async () => {
         setStatus("Getting ETH Balance")
         setLoading(true)
-        const balance = await Axios.get("BaseUri/api/eth/balance")
+        const balance = await Axios.get(`${BaseUri}/api/eth/balance`)
         setStatus("Getting ETH History")
-        const history = await Axios.get("BaseUri/api/eth/history")
+        const history = await Axios.get(`${BaseUri}/api/eth/history`)
         setETH({
             balance : balance.data.balance.balance,
             address : balance.data.balance.address,
@@ -51,9 +51,9 @@ const UserContextProvider = ({children}) => {
     const getXRP = async () => {
         setStatus("Getting XRP Balance")
         setLoading(true)
-        const balance = await Axios.get("BaseUri/api/xrp/balance")
+        const balance = await Axios.get(`${BaseUri}/api/xrp/balance`)
         setStatus("Getting XRP History")
-        const history = await Axios.get("BaseUri/api/xrp/history")
+        const history = await Axios.get(`${BaseUri}/api/xrp/history`)
         setXRP({
             balance : balance.data.balance.balance,
             address : balance.data.balance.address,
@@ -66,9 +66,9 @@ const UserContextProvider = ({children}) => {
     const getWallet = async () => {
         setLoading(true)
         setStatus("Getting User Balances")
-        const balance = await Axios.get("BaseUri/api/wallet/balance")
+        const balance = await Axios.get(`${BaseUri}/api/wallet/balance`)
         setStatus("Getting User Transaction Histories")
-        const history = await Axios.get("BaseUri/api/wallet/history")
+        const history = await Axios.get(`${BaseUri}/api/wallet/history`)
         setBTC({
             balance : balance.data.result.BTC.balance,
             address : balance.data.result.BTC.address,
@@ -90,7 +90,7 @@ const UserContextProvider = ({children}) => {
     const transfer = async (chain, to, value) => {
         setLoading(true)
         setStatus(`Transferring ${chain.toUpperCase()}`)
-        const result = await Axios.post(`BaseUriapi/${chain}/transfer`, {uid_payee : to, value})
+        const result = await Axios.post(`${BaseUri}api/${chain}/Transfer`, {uid_payee : to, value})
         setLoading(false)
         setStatus("")
         return result

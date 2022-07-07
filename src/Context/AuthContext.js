@@ -17,7 +17,7 @@ const AuthContextProvider = ({children}) => {
         setStatus("Loading User")
         setLoading(true)
         return Axios
-        .post("BaseUri/api/auth/login", {username : email, password})
+        .post(`${BaseUri}/api/auth/login`, {username : email, password})
         .then(data => {setUser(data.data.user);})
         .catch(err => {return err.response.data.message})
         .finally(() => {setLoading(false);setStatus("Loading User");})
@@ -27,7 +27,7 @@ const AuthContextProvider = ({children}) => {
         setStatus("Signing Out")
         setLoading(true)
         return Axios
-        .get("BaseUri/api/auth/logout")
+        .get(`${BaseUri}/api/auth/logout`)
         .then(data => {setUser(data.data.user)})
         .catch(err => {return err.response.data.message})
         .finally(() => {setLoading(false);setStatus("Loading User");})
@@ -37,7 +37,7 @@ const AuthContextProvider = ({children}) => {
         setStatus("Creating User")
         setLoading(true)
         return Axios
-        .post("BaseUri/api/auth/signup", {username : email, password})
+        .post(`${BaseUri}/api/auth/signup`, {username : email, password})
         .then(data => {setUser(data.data.user)})
         .catch(err => {return err.response.data.message})
         .finally(() => {setLoading(false);setStatus("Loading User");})
@@ -45,28 +45,28 @@ const AuthContextProvider = ({children}) => {
     
     const validateOTP = async (otp) => {
         return Axios
-        .post("BaseUri/api/auth/validate", {otp})
+        .post(`${BaseUri}/api/auth/validate`, {otp})
         .then(data => {console.log(data)})
         .catch(err => {return err.response.data.message})
     }
     
     const getOTP = async (email) => {
         return Axios
-        .post("BaseUri/api/auth/getotp", {email})
+        .post(`${BaseUri}/api/auth/getotp`, {email})
         .then(data => {console.log(data)})
         .catch(err => {return err.response.data.message})
     }
     
     const resetPassword = async (password) => {
         return Axios
-        .post("BaseUri/api/auth/reset", {password})
+        .post(`${BaseUri}/api/auth/reset`, {password})
         .then(data => {console.log(data)})
         .catch(err => {return err.response.data.message})
     }
     
     useEffect(() => {
         Axios
-        .get("BaseUri/api/auth/getUser")
+        .get(`${BaseUri}/api/auth/getUser`)
         .then(res => {setUser(res.data.user)})
         .catch(err => console.log(err))
     }, [])
