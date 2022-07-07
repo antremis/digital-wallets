@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon</title>
+    <g id="Components" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="table" transform="translate(-469.000000, -2419.000000)" stroke-width="1.5">
+            <g id="Row-2" transform="translate(112.000000, 2276.000000)">
+                <g id="Table/Breakpoint-L-→-XXL/Small/Cell-Body/center-aligned/✪-Default-Copy-2" transform="translate(337.000000, 126.000000)">
+                    <g id="Group" transform="translate(20.750000, 15.000000)">
+                        <g id="Icon" transform="translate(0.000000, 2.750000)">
+                            <g id="Fill" fill="#338808" fill-rule="nonzero" stroke="#338808">
+                                <circle id="Oval" cx="11.25" cy="11.25" r="11.25"></circle>
+                            </g>
+                            <g id="Stroke" transform="translate(6.250000, 7.250000)" stroke="#FFFFFF">
+                                <polyline id="Path" points="0 4.70200002 3.26300001 8.00000003 10 0"></polyline>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon/main-nav/logout</title>
+    <g id="DT-V2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Group" transform="translate(0.000000, -0.000000)" stroke="#000000" stroke-width="1.5">
+            <g id="Stroke" transform="translate(0.748465, 1.500000)">
+                <path d="M6.75153515,10.504 L22.5015352,10.504 M18.7515352,14.254 L22.5015352,10.504 L18.7515352,6.75400003 M15.0015352,15 L15.0015352,19.5 C15.0371942,20.2901885 14.427547,20.9606216 13.6375352,21 L1.86453517,21 C1.07492059,20.9600911 0.465865321,20.2898175 0.501535171,19.5 L0.501535171,1.5 C0.465307712,0.709981525 1.07466722,0.0393731147 1.86453517,0 L13.6375352,0 C14.427547,0.0393784612 15.0371942,0.709811541 15.0015352,1.5 L15.0015352,6" id="Adjust-Stroke-Width"></path>
+            </g>
+        </g>
+    </g>
+</svg>

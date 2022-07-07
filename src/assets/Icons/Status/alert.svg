@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Table/Breakpoint-L-→-XXL/Small/一-Building-Blocks/Cell-Body/center-aligned/Icon" transform="translate(-20.000000, -17.000000)" stroke-width="1.5">
+            <g id="Group" transform="translate(20.000000, 15.000000)">
+                <g transform="translate(0.000000, 2.000000)" id="Icon">
+                    <g id="Fill" transform="translate(0.750054, 0.749896)" fill="#FF9B19" stroke="#FF9B19" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M0.529945499,12.5311038 C-0.1766485,11.823652 -0.1766485,10.6775556 0.529945499,9.9701038 L9.96994554,0.531103765 C10.3091366,0.191088211 10.7696736,1.77635684e-15 11.2499455,1.77635684e-15 C11.7302175,1.77635684e-15 12.1907545,0.191088211 12.5299455,0.531103765 L21.9699456,9.9701038 C22.6765396,10.6775556 22.6765396,11.823652 21.9699456,12.5311038 L12.5299455,21.9701039 C11.8228367,22.6765832 10.6770544,22.6765832 9.96994554,21.9701039 L0.529945499,12.5311038 Z" id="Path"></path>
+                    </g>
+                    <g id="Stroke" transform="translate(12.000000, 12.000000) scale(1, -1) translate(-12.000000, -12.000000) translate(11.000000, 6.500000)" stroke="#20242B">
+                        <line x1="-2" y1="7.75" x2="4" y2="7.75" id="Path" stroke-linecap="round" transform="translate(1.000000, 7.750000) rotate(-90.000000) translate(-1.000000, -7.750000) "></line>
+                        <circle id="Oval" fill="#20242B" cx="1" cy="1" r="1"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
