@@ -11,7 +11,7 @@ import smtplib
 u1 = "2268b31c-2239-4280-9414-e98f166c94c0"
 u2 = "69906b1e-ddb4-471f-a2ee-6a435eaa879b"
 
-app = Flask(__name__)
+app = Flask(__name__, )
 
 CORS(app, supports_credentials=True)
 # server_session = Session()
