@@ -65,6 +65,10 @@ def checkLogin(myCursor, username, password):
 	else:
 		return None
 
+def updatePassword(MyCursor, conn, email, newPassword):
+	MyCursor.execute(f'UPDATE login SET Password="{newPassword}" where Email="{email}";')
+	conn.commit()
+
 def checkUser(myCursor, username):
   myCursor.execute(f'SELECT * FROM LOGIN WHERE Username="{username}";')
   if myCursor.fetchone():

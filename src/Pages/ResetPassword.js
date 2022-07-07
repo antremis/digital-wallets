@@ -7,6 +7,7 @@ const ResetPasswword = () => {
 
     const [pass1, setPass1] = useState('')
     const [pass2, setPass2] = useState('')
+    const {resetPassword} = useAuthContext()
     const navigation = useNavigate()
 
     
@@ -93,7 +94,10 @@ const ResetPasswword = () => {
     }
 
     const handleSubmit = (e) => {
+        console.log(pass1)
         e.preventDefault()
+        resetPassword(pass1)
+        navigation('/login')
     }
 
     return (
@@ -117,7 +121,7 @@ const ResetPasswword = () => {
                 </div>
                 <label style = {styles.Label} htmlFor = "signup-password" >Retype Password</label>
                 <input style = {styles.Input} id = "signup-password" type="password" placeholder = "********" value = {pass2} onChange = {(e) => setPass2(e.target.value)} />
-                <button style = {styles.Button} type="submit" disabled = {validate} >Login</button>
+                <button style = {styles.Button} type="submit" >Login</button>
             </form>
             <Link to = "/recover" style = {styles.Back} >
                 <ion-icon name="arrow-back-outline" />

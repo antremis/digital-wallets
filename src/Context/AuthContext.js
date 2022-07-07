@@ -44,7 +44,7 @@ const AuthContextProvider = ({children}) => {
     
     const validateOTP = async (otp) => {
         return Axios
-        .post("http://127.0.0.1:5000/api/auth/validateotp", {otp})
+        .post("http://127.0.0.1:5000/api/auth/validate", {otp})
         .then(data => {console.log(data)})
         .catch(err => {return err.response.data.message})
     }
@@ -56,6 +56,13 @@ const AuthContextProvider = ({children}) => {
         .catch(err => {return err.response.data.message})
     }
     
+    const resetPassword = async (password) => {
+        return Axios
+        .post("http://127.0.0.1:5000/api/auth/reset", {password})
+        .then(data => {console.log(data)})
+        .catch(err => {return err.response.data.message})
+    }
+    
     useEffect(() => {
         Axios
         .get("http://127.0.0.1:5000/api/auth/getUser")
@@ -63,14 +70,14 @@ const AuthContextProvider = ({children}) => {
         .catch(err => console.log(err))
     }, [])
 
-    // useEffect(() => {
-    //     user 
-    //     ? navigate("/accounts") 
-    //     : navigate("/login")
-    // }, [user])
+    useEffect(() => {
+        user 
+        ? navigate("/accounts") 
+        : navigate("/login")
+    }, [user])
 
     return (
-        <AuthContext.Provider value = {{user, handleLogin, signOut, handleSignup, getOTP, validateOTP}}>
+        <AuthContext.Provider value = {{user, handleLogin, signOut, handleSignup, getOTP, validateOTP, resetPassword}}>
             {loading ? <Loading text = {status} /> : children}
         </AuthContext.Provider> 
     )

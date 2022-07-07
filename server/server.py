@@ -8,6 +8,9 @@ import EthereumFunctions as ETH
 import random
 import smtplib
 
+u1 = "2268b31c-2239-4280-9414-e98f166c94c0"
+u2 = "69906b1e-ddb4-471f-a2ee-6a435eaa879b"
+
 app = Flask(__name__)
 
 CORS(app, supports_credentials=True)
@@ -153,12 +156,13 @@ def getOTP():
             return jsonify({"message": "Missing username"}), 400
         
         session["otp"] = generateOTP(email)
+        session["email"] = email
         session.modified = True
         return jsonify({"message" : "Request Recieved"}), 200
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
         
-@app.route("/api/auth/validateotp", methods = ["POST"])
+@app.route("/api/auth/validate", methods = ["POST"])
 def validateotp():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -174,6 +178,25 @@ def validateotp():
             return jsonify({"message" : "OTP validated"}), 200
         else :
             return jsonify({"message" : "Invalid OTP"}), 400
+    else :
+        return jsonify({"message" : "Unsupported Request Method"}), 400
+        
+@app.route("/api/auth/reset", methods = ["POST"])
+def resetPassword():
+    if request.method == 'OPTIONS':
+        return _build_cors_preflight_response()
+    if request.method == 'POST':
+        
+        try : 
+            password = request.json["password"]
+        except :
+            return jsonify({"message": "Missing username"}), 400
+        
+        if session.get("email") :
+            db.updatePassword(pointer, DB, session["email"], password)
+            return jsonify({"message" : "OTP validated"}), 200
+        else :
+            return jsonify({"message" : "Something Went Wrong"}), 400
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
