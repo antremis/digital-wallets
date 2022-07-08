@@ -24,7 +24,8 @@ a:hover {
 }
 
 :root {
-	font-size: min(10px, 1vw);
+	/* font-size: min(10px, 1vw); */
+	font-size : 10px;
 }
 
 body{

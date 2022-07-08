@@ -8,7 +8,7 @@ def connectSQL():
 
 def createDB(myCursor):  
 
-	myCursor.execute('''CREATE TABLE IF NOT EXISTS Login(
+	myCursor.execute('''CREATE TABLE IF NOT EXISTS LOGIN(
 		Uid varchar(64) NOT NULL,
 		Username varchar(45) NOT NULL,
 		Password varchar(45) NOT NULL,
@@ -46,10 +46,10 @@ def createDB(myCursor):
 	# 	UNIQUE KEY wif_UNIQUE (wif)
     # );''')
 
-def addNewUser(myCursor, conn, username, password):
+def addNewUser(myCursor, conn, username, password, email="akash7890123@gmail.com"):
 	from uuid import uuid4
 	uid = str(uuid4())
-	myCursor.execute(f'INSERT INTO LOGIN VALUES("{uid}", "{username}", "{password}");')
+	myCursor.execute(f'INSERT INTO LOGIN VALUES("{uid}", "{username}", "{password}", "{email}");')
 	conn.commit()
 	return uid
 
@@ -66,7 +66,7 @@ def checkLogin(myCursor, username, password):
 		return None
 
 def updatePassword(MyCursor, conn, email, newPassword):
-	MyCursor.execute(f'UPDATE login SET Password="{newPassword}" where Email="{email}";')
+	MyCursor.execute(f'UPDATE LOGIN SET Password="{newPassword}" where Email="{email}";')
 	conn.commit()
 
 def checkUser(myCursor, username):
@@ -91,7 +91,7 @@ def lookup(myCursor, username, type):
   # Type can be BTC, ETH or XRP
   # The function returns the WIF of specific type
 #   myCursor.execute(f'SELECT * from keydata, login where Uid=UKid and LOWER(username) LIKE LOWER("{username}");')
-  myCursor.execute(f'SELECT * from keydata, login where Uid=UKid and username LIKE "{username}";')
+  myCursor.execute(f'SELECT * from KeyData, login where Uid=UKid and username LIKE "{username}";')
   result = myCursor.fetchone()
   if type == "BTC":
     return result[1]

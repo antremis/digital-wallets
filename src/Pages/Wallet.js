@@ -2,6 +2,12 @@ import React, {useState} from'react'
 import Card from '../Components/Card'
 import Table from '../Components/Table/Table'
 import { useUserContext } from '../Context/UserContext'
+import Bitcoin from "../assets/Icons/Currencies/Bitcoin.svg";
+import Ethereum from "../assets/Icons/Currencies/Ethereum.svg";
+import Ripple from "../assets/Icons/Currencies/Ripple.svg";
+import NonFungibleToken from "../assets/Icons/Currencies/NFT.svg";
+import Tokens from "../assets/Icons/Currencies/Tokens.svg";
+import Cash from "../assets/Icons/Currencies/cash-outline.svg";
 
 const Wallet = () => {
 
@@ -11,7 +17,7 @@ const Wallet = () => {
     const [data] = useState([
         {
             key : 1,
-            uri : "https://cdn.jsdelivr.net/npm/cryptocoins-icons@2.9.0/SVG/BTC.svg",
+            uri : Bitcoin,
             name : "Bitcoin",
             currency : "BTC",
             balance : BTC?.balance,
@@ -20,7 +26,7 @@ const Wallet = () => {
         },
         {
             key : 2,
-            uri : "https://cdn.jsdelivr.net/npm/cryptocoins-icons@2.9.0/SVG/ETH.svg",
+            uri : Ethereum,
             name : "Ethereum",
             currency : "ETH",
             balance : ETH?.balance,
@@ -29,7 +35,7 @@ const Wallet = () => {
         },
         {
             key : 3,
-            uri : "https://cdn.jsdelivr.net/npm/cryptocoins-icons@2.9.0/SVG/XRP.svg",
+            uri : Ripple,
             name : "Ripple",
             currency : "XRP",
             balance : XRP?.balance,
@@ -38,7 +44,7 @@ const Wallet = () => {
         },
         {
             key : 4,
-            uri : "https://img.icons8.com/external-wanicon-solid-wanicon/344/external-nft-nft-wanicon-solid-wanicon.png",
+            uri : NonFungibleToken,
             name : "NFT",
             currency : "ETH",
             balance : ETH?.balance,
@@ -47,13 +53,22 @@ const Wallet = () => {
         },
         {
             key : 5,
-            uri : "https://img.icons8.com/external-glyph-wichaiwi/344/external-token-gamefi-glyph-wichaiwi.png",
+            uri : Tokens,
             name : "Token",
             currency : "ETH",
             balance : ETH?.balance,
             value : "$5000",
             address : ETH?.address,
         },
+        {
+            key : 6,
+            uri : Cash,
+            name : "FIAT Assets",
+            currency : "INR",
+            balance : parseFloat(129800),
+            value : "CB : 135354",
+            address : "HBCDJS83927",
+        }
     ])
 
     const styles = {

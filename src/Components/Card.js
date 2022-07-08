@@ -1,7 +1,8 @@
 import React from 'react'
 
-const Card = ({uri, name, currency, balance, value, address}) => {
 
+const Card = ({uri, name, currency, balance, value, address}) => {
+    balance = parseFloat(balance)
     const styles = {
         Card : {
             border : "1px solid var(--clr-white-dark)",
@@ -23,7 +24,7 @@ const Card = ({uri, name, currency, balance, value, address}) => {
             aspectRatio : "1/1"
         },
         Balance : {
-            fontSize : "4.6em",
+            fontSize : "4rem",
         },
         Value : {
             fontSize : "1.4em",
@@ -48,7 +49,7 @@ const Card = ({uri, name, currency, balance, value, address}) => {
                 <p>{name}</p>
             </div>
             <div>
-                <p style = {styles.Balance} >{balance} {currency}</p>
+                <p style = {styles.Balance} >{balance.toFixed(4)} {currency}</p>
                 <p style = {styles.Value} >INR {value}</p>
             </div>
             <div style = {styles.Address} onClick={() => {navigator.clipboard.writeText(address)}} >

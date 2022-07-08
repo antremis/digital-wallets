@@ -90,7 +90,7 @@ const UserContextProvider = ({children}) => {
     const transfer = async (chain, to, value) => {
         setLoading(true)
         setStatus(`Transferring ${chain.toUpperCase()}`)
-        const result = await Axios.post(`${BaseUri}api/${chain}/Transfer`, {uid_payee : to, value})
+        const result = await Axios.post(`${BaseUri}/api/${chain}/transfer`, {uid_payee : to, value})
         setLoading(false)
         setStatus("")
         return result

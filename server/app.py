@@ -609,7 +609,7 @@ def getTokenHistory():
 if __name__ == "__main__" :
     try :
         app.secret_key = "cnpr9qm3yxrq3yr73r77y2m83ry293zr8y938ru"
-        # app.config['SESSION_TYPE'] = 'filesystem'
+        app.config['SESSION_TYPE'] = 'filesystem'
         app.config['SESSION_COOKIE_SAMESITE'] = "None"
         app.config["SESSION_COOKIE_SECURE"] = True
         # server_session.init_app(app)

@@ -5,8 +5,15 @@ import Transfer from './Transfer';
 
 const BTC = () => {
 
-    const {BTC, transfer, prices, getBTC} = useUserContext()
+    const {BTC, transfer, prices, getFIAT} = useUserContext()
     const [active, setActive] = useState({transform : "translateX(100%)", opacity : "0"})
+
+    const FIAT = {
+        balance : "0",
+        address : "whosejoe",
+        hisotory : [],
+    }
+
 
     const handeModalChange = (type) => {
         if(type === "open") {
