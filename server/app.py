@@ -11,9 +11,9 @@ import smtplib
 u1 = "2268b31c-2239-4280-9414-e98f166c94c0"
 u2 = "69906b1e-ddb4-471f-a2ee-6a435eaa879b"
 
-app = Flask(__name__, )
+application = Flask(__name__, )
 
-CORS(app, supports_credentials=True)
+CORS(application, supports_credentials=True)
 # server_session = Session()
 # logged_in_users = []
 
@@ -55,14 +55,14 @@ def _build_cors_preflight_response():
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
 
-@app.route("/")
+@application.route("/")
 def temp():
     return "Hello World"
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Authentication Endpoints
 # ----------------------------------------------------------------------------------------------------------------------
-@app.route("/api/auth/getUser")
+@application.route("/api/auth/getUser")
 def getUser():
     if request.method == "GET" :
         if session.get("uid") :
@@ -72,7 +72,7 @@ def getUser():
     else :
         return jsonify({"message" : "Unsupported Request Method", "user" : None}), 400
 
-@app.route("/api/auth/login", methods = ["POST"])
+@application.route("/api/auth/login", methods = ["POST"])
 def login():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -97,7 +97,7 @@ def login():
             # Logic
             # uid -> unique user ID
             # if user["uid"] not in logged_in_users :
-            #     logged_in_users.append(user["uid"])
+            #     logged_in_users.applicationend(user["uid"])
             #     return jsonify({"message" : "User logged in", "user" : user}), 200
             # else :
             #     return jsonify({"message" : "User Already Logged In", "user" : user}), 200
@@ -106,7 +106,7 @@ def login():
     else :
         return jsonify({"message" : "Unsupported Request Method", "user" : None}), 400
 
-@app.route("/api/auth/logout")
+@application.route("/api/auth/logout")
 def signout() :
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -116,7 +116,7 @@ def signout() :
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/auth/signup", methods = ["POST"])
+@application.route("/api/auth/signup", methods = ["POST"])
 def signup():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -144,7 +144,7 @@ def signup():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 
         
-@app.route("/api/auth/getotp", methods = ["POST"])
+@application.route("/api/auth/getotp", methods = ["POST"])
 def getOTP():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -162,7 +162,7 @@ def getOTP():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
         
-@app.route("/api/auth/validate", methods = ["POST"])
+@application.route("/api/auth/validate", methods = ["POST"])
 def validateotp():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -181,7 +181,7 @@ def validateotp():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
         
-@app.route("/api/auth/reset", methods = ["POST"])
+@application.route("/api/auth/reset", methods = ["POST"])
 def resetPassword():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -203,7 +203,7 @@ def resetPassword():
 # ----------------------------------------------------------------------------------------------------------------------
 # Wallet Endpoints
 # ----------------------------------------------------------------------------------------------------------------------
-@app.route("/api/wallet/balance")
+@application.route("/api/wallet/balance")
 def getWalletBalance():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -221,7 +221,7 @@ def getWalletBalance():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/wallet/history")
+@application.route("/api/wallet/history")
 def getWalletTransaction():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -241,7 +241,7 @@ def getWalletTransaction():
 # ----------------------------------------------------------------------------------------------------------------------
 # ETH Endpoints
 # ----------------------------------------------------------------------------------------------------------------------
-@app.route("/api/eth/generate", methods = ["POST"])
+@application.route("/api/eth/generate", methods = ["POST"])
 def genEthWallet():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -267,7 +267,7 @@ def genEthWallet():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/eth/transfer", methods = ["POST"])
+@application.route("/api/eth/transfer", methods = ["POST"])
 def transferEth():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -293,7 +293,7 @@ def transferEth():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/eth/balance")
+@application.route("/api/eth/balance")
 def getEthBalance():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -308,7 +308,7 @@ def getEthBalance():
         return jsonify({"message" : "Unsupported Request Method"}), 400
     
 
-@app.route("/api/eth/history")
+@application.route("/api/eth/history")
 def getEthHistory():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -325,7 +325,7 @@ def getEthHistory():
 # ----------------------------------------------------------------------------------------------------------------------
 # BTC Endpoints
 # ----------------------------------------------------------------------------------------------------------------------
-@app.route("/api/btc/generate", methods = ["POST"])
+@application.route("/api/btc/generate", methods = ["POST"])
 def genBtcWallet():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -352,7 +352,7 @@ def genBtcWallet():
     else : 
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/btc/transfer", methods = ["POST"])
+@application.route("/api/btc/transfer", methods = ["POST"])
 def transferBtc():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -377,7 +377,7 @@ def transferBtc():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/btc/balance")
+@application.route("/api/btc/balance")
 def getBtcBalance():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -392,7 +392,7 @@ def getBtcBalance():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/btc/history")
+@application.route("/api/btc/history")
 def getBtcHistory():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -410,7 +410,7 @@ def getBtcHistory():
 # ----------------------------------------------------------------------------------------------------------------------
 # XRP Endpoints
 # ----------------------------------------------------------------------------------------------------------------------
-# @app.route("/api/xrp/generate")
+# @application.route("/api/xrp/generate")
 def genXrpWallet():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -434,7 +434,7 @@ def genXrpWallet():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/xrp/transfer", methods = ["POST"])
+@application.route("/api/xrp/transfer", methods = ["POST"])
 def transferXrp():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -458,7 +458,7 @@ def transferXrp():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/xrp/balance")
+@application.route("/api/xrp/balance")
 def getXrpBalance():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -473,7 +473,7 @@ def getXrpBalance():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/xrp/history")
+@application.route("/api/xrp/history")
 def getXrpHistory():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -492,7 +492,7 @@ def getXrpHistory():
 # ----------------------------------------------------------------------------------------------------------------------
 # NFT Endpoints
 # ----------------------------------------------------------------------------------------------------------------------
-@app.route("/api/nft/transfer")
+@application.route("/api/nft/transfer")
 def transferNFT():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -519,7 +519,7 @@ def transferNFT():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/nft/balance")
+@application.route("/api/nft/balance")
 def getNFTBalance():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -535,7 +535,7 @@ def getNFTBalance():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/nft/history")
+@application.route("/api/nft/history")
 def getNFTHistory():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -555,7 +555,7 @@ def getNFTHistory():
 # ----------------------------------------------------------------------------------------------------------------------
 # Token Endpoints
 # ----------------------------------------------------------------------------------------------------------------------
-@app.route("/api/tok/transfer")
+@application.route("/api/tok/transfer")
 def transferToken():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -582,7 +582,7 @@ def transferToken():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/tok/balance")
+@application.route("/api/tok/balance")
 def getTokenBalance():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
@@ -598,7 +598,7 @@ def getTokenBalance():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@app.route("/api/tok/history")
+@application.route("/api/tok/history")
 def getTokenHistory():
     pass
 
@@ -608,12 +608,12 @@ def getTokenHistory():
 # ----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__" :
     try :
-        app.secret_key = "cnpr9qm3yxrq3yr73r77y2m83ry293zr8y938ru"
-        app.config['SESSION_TYPE'] = 'filesystem'
-        app.config['SESSION_COOKIE_SAMESITE'] = "None"
-        app.config["SESSION_COOKIE_SECURE"] = True
-        # server_session.init_app(app)
-        app.run()
+        application.secret_key = "cnpr9qm3yxrq3yr73r77y2m83ry293zr8y938ru"
+        application.config['SESSION_TYPE'] = 'filesystem'
+        application.config['SESSION_COOKIE_SAMESITE'] = "None"
+        application.config["SESSION_COOKIE_SECURE"] = True
+        # server_session.init_application(application)
+        application.run()
     except:
         pass
     finally:
