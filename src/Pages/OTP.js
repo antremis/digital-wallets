@@ -17,7 +17,7 @@ const OTP = () => {
             justifyContent : "center",
             height : "100%",
             width : "100%",
-            backgroundColor : "var(--clr-white-dark)",
+            backgroundColor : "var(--clr-white-fill)",
         },
         TextWrapper : {
             display : "flex",
@@ -49,14 +49,14 @@ const OTP = () => {
         },
         Input : {
             padding : "1rem",
-            backgroundColor : "var(--clr-white-dark)",
+            backgroundColor : "var(--clr-white-fill)",
             width : "70ch",
             marginBottom : "2rem",
-            borderBottom : "1px solid var(--clr-white-darker)",
+            borderBottom : "1px solid var(--clr-white-border)",
         },
         Recover : {
             color : "white",
-            backgroundColor : otp ? "var(--clr-icon-highlight)" : "var(--clr-white-darker)",
+            backgroundColor : otp ? "var(--clr-icon-highlight)" : "var(--clr-white-dark)",
             width : "100%",
             padding : "1rem 0",
             cursor : "pointer",

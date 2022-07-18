@@ -14,14 +14,31 @@
 	/* outline : 1px solid black; */
 }
 	
+@font-face{
+	font-family : "font-black";
+	src : url("./assets/Fonts/NeuzeitGro-Bla.otf")
+}
+@font-face{
+	font-family : "font-regular";
+	src : url("./assets/Fonts/NeuzeitGro-Reg.otf")
+}
+@font-face{
+	font-family : "font-light";
+	src : url("./assets/Fonts/NeuzeitGro-Lig.otf")
+}
+@font-face{
+	font-family : "font-bold";
+	src : url("./assets/Fonts/NeuzeitGro-Bol.otf")
+}
+
 a{
 	text-decoration: none;
 	color : inherit
 }
 
-a:hover {
+/* a:hover {
 	color : var(--clr-icon-highlight)
-}
+} */
 
 :root {
 	/* font-size: min(10px, 1vw); */
@@ -30,14 +47,60 @@ a:hover {
 
 body{
 	--clr-header : #004263;
-	--clr-white-dark : #DCDEE1;
-	--clr-white-darker : #a3a7ac;
+	--clr-white-fill : #EEEFF0;
+	--clr-white-border : #DCDEE1;
+	--clr-white-dark : #a3a7ac;
 	--clr-hr : #d7dbe1;
-	--clr-icon-highlight : #0370ad;
+	--clr-icon-highlight : #016fad;
 	--clr-green : #82C823;
 	--clr-badge : #d14905;
-	font-family: 'Poppins', sans-serif;
+	--clr-black : #000000;
+	--clr-white : #FFFFFF;
+	font-family : 'font-regular', sans-serif;
+	color : var(--clr-black);
 	height : 100vh;
 	width : 100vw;
 	overflow : hidden;
+}
+
+[data-attribute = "asset-card"]{
+	border : 1px solid var(--clr-white-border);
+}
+
+[data-attribute = "asset-card"]:hover,
+[data-attribute = "asset-card"]:focus {
+	border : 1px solid var(--clr-icon-highlight);
+	color : inherit
+}
+
+[data-attribute = "table-btn"]{
+	background-color: var(--clr-white-fill);
+	color : var(--clr-icon-highlight);
+}
+
+[data-attribute = "table-btn"]:disabled {
+	background-color: var(--clr-white-dark);
+	color : var(--clr-white);
+}
+
+[data-attribute = "transfer-btn"]{
+	background-color: var(--clr-icon-highlight);
+	color : var(--clr-white);
+}
+
+[data-attribute = "transfer-btn"]:disabled {
+	background-color: var(--clr-white-dark);
+}
+
+[data-attribute = "input"] {
+	border-bottom : 1px solid var(--clr-white-border);
+}
+
+[data-attribute = "input"]:focus {
+	border-bottom : 1px solid var(--clr-icon-highlight);
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {  
+   opacity: 1;
 }

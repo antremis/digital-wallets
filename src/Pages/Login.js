@@ -8,6 +8,7 @@ const Login = () => {
     const [login, setLogin] = useState({transform : "translateX(0)"})
     const [signup, setSignup] = useState({transform : "translateX(100%)"})
     const [email, setEmail] = useState('')
+    const [recoveryEmail, setRecoveryEmail] = useState('')
     const [password, setPassword] = useState('')
     const {handleLogin, handleSignup} = useAuthContext()
 
@@ -19,7 +20,7 @@ const Login = () => {
             justifyContent : "center",
             height : "100%",
             width : "100%",
-            backgroundColor : "var(--clr-white-dark)",
+            backgroundColor : "var(--clr-white-fill)",
         },
         FlexContainer : {
             display : "flex",
@@ -76,13 +77,13 @@ const Login = () => {
         },
         Input : {
             padding : "1rem",
-            backgroundColor : "var(--clr-white-dark)",
+            backgroundColor : "var(--clr-white-fill)",
             width : "70ch",
             marginBottom : "2rem",
         },
         Login : {
             color : "white",
-            backgroundColor : email && password ? "var(--clr-icon-highlight)" : "var(--clr-white-darker)",
+            backgroundColor : email && password ? "var(--clr-icon-highlight)" : "var(--clr-white-dark)",
             width : "100%",
             padding : "1rem 0",
             cursor : "pointer",
@@ -127,10 +128,11 @@ const Login = () => {
         e.preventDefault()
         if(type === "login"){
             handleLogin(email, password)
+            .then(data => window.alert(data))
         }
         else {
-            handleSignup(email, password)
-            .then(data => console.log(data))
+            handleSignup(email, password, recoveryEmail)
+            .then(data => window.alert(data.message))
         }
     }
 
@@ -158,8 +160,10 @@ const Login = () => {
                     <form style = {styles.Form} onSubmit = {(e) => handleSubmit(e, "signup")} >
                         <label style = {styles.Label} htmlFor = "signup-email" >Email</label>
                         <input style = {styles.Input} id = "signup-email" type="email" placeholder = "john.doe@fil.com" value = {email} onChange = {(e) => setEmail(e.target.value)} />
-                        <label style = {styles.Label} htmlFor = "signup-password" >Password</label>
-                        <input style = {styles.Input} id = "signup-password" type="password" placeholder = "********" value = {password} onChange = {(e) => setPassword(e.target.value)} />
+                        <label style = {styles.Label} htmlFor = "signup-password1" >Recovery Email</label>
+                        <input style = {styles.Input} id = "signup-password1" type="email" placeholder = "john.doe@gmail.com" value = {recoveryEmail} onChange = {(e) => setRecoveryEmail(e.target.value)} />
+                        <label style = {styles.Label} htmlFor = "signup-password2" >Password</label>
+                        <input style = {styles.Input} id = "signup-password2" type="password" placeholder = "********" value = {password} onChange = {(e) => setPassword(e.target.value)} />
                         <div style = {styles.PasswordCheckWrapper} >
                             <p>The password must include:</p>
                             <ul style = {styles.PasswordCheck} >

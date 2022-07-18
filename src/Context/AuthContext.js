@@ -33,11 +33,11 @@ const AuthContextProvider = ({children}) => {
         .finally(() => {setLoading(false);setStatus("Loading User");})
     }
 
-    const handleSignup = async (email, password) => {
+    const handleSignup = async (email, password, recoveryPassword) => {
         setStatus("Creating User")
         setLoading(true)
         return Axios
-        .post(`${BaseUri}/api/auth/signup`, {username : email, password})
+        .post(`${BaseUri}/api/auth/signup`, {username : email, password, recoveryPassword})
         .then(data => {setUser(data.data.user)})
         .catch(err => {return err.response.data.message})
         .finally(() => {setLoading(false);setStatus("Loading User");})

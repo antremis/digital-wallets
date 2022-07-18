@@ -13,6 +13,7 @@ import { useAuthContext } from './Context/AuthContext';
 import PasswordRecover from './Pages/ForgotPassword';
 import OTP from './Pages/OTP';
 import ResetPasswword from './Pages/ResetPassword';
+import FIAT from './Components/FIAT';
 
 const App = () => {
 
@@ -33,7 +34,8 @@ const App = () => {
 				<Routes>
 					<Route path="/" exact element={<Landing />} >
 						<Route path="/accounts" element={<Accounts />} >
-							<Route path="/accounts" element={<BTC />} />
+							<Route path="/accounts" element={<XRP />} />
+							<Route path="/accounts/FIAT" element={<FIAT />} />
 							<Route path="/accounts/BTC" element={<BTC />} />
 							<Route path="/accounts/ETH" element={<ETH />} />
 							<Route path="/accounts/XRP" element={<XRP />} />

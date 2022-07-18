@@ -25,7 +25,10 @@ def getTransactions(wif) :
             "from" : "192M9182M3M9Q8YU3M12U3YM19283Y19283YMM93Y5854Y",
             "amount" : 0.0001,
             "date" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
-            "status" : "completed",
+            "status" : "Completed",
+            "txuri" : f"https://www.blockchain.com/btc-testnet/tx/{tx}",
+            "adduri" : "https://www.blockchain.com/btc-testnet/address/192M9182M3M9Q8YU3M12U3YM19283Y19283YMM93Y5854Y",
+            "chain" : "Bitcoin-Testnet",
         })
     return tx_data
 

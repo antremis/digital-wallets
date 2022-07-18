@@ -79,7 +79,10 @@ def getTransactionDetails(json, account_add):
             "from" : transaction["tx"]["Account"],
             "amount" : int(transaction["tx"]["Amount"])/10**6,
             "date" : datetime.fromtimestamp(int(transaction["tx"]["date"])+946684800),
-            "status" : "Completed"
+            "status" : "Completed",
+            "txuri" : f"https://testnet.xrpl.org/transactions/{transaction['tx']['hash']}",
+            "adduri" : f"https://testnet.xrpl.org/accounts/{transaction['tx']['Account']}",
+            "chain" : "Ripple-Testnet",
         }
         txnData.append(tx)
     return txnData

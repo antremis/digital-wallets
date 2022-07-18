@@ -24,7 +24,7 @@ const XRP = () => {
 
     return(
         <>
-            <ChainInfo refresh = {getXRP} handeModalChange = {handeModalChange} currency = "XRP" balance = {XRP?.balance} value = {(prices?.XRP*XRP?.balance).toFixed(5)} address = {XRP?.address} history = {XRP?.history} txuri = "https://testnet.xrpl.org/transactions/" adduri = "https://testnet.xrpl.org/accounts/" />
+            <ChainInfo refresh = {getXRP} handeModalChange = {handeModalChange} currency = "XRP" balance = {XRP?.balance} value = {(prices?.XRP*XRP?.balance).toFixed(5)} address = {XRP?.address} history = {XRP?.history} />
             <Transfer transfer = {handleTransfer} handeModalChange = {handeModalChange} active = {active} currency = "XRP" balance = {XRP?.balance} value = {(prices?.XRP*XRP?.balance).toFixed(5)} address = {XRP?.address} history = {XRP?.history} />
         </>
     )

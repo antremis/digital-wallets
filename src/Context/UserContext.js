@@ -9,13 +9,25 @@ const UserContext = createContext()
 
 const UserContextProvider = ({children}) => {
 
-    const [BTC, setBTC] = useState({balance : 0, history : []})
-    const [ETH, setETH] = useState({balance : 0, history : []})
-    const [XRP, setXRP] = useState({balance : 0, history : []})
+    const [BTC, setBTC] = useState({balance : 0, history : [], address : ""})
+    const [ETH, setETH] = useState({balance : 0, history : [], address : ""})
+    const [XRP, setXRP] = useState({balance : 0, history : [], address : ""})
+    const [NFT, setNFT] = useState([])
+    const [TOK, setTOK] = useState([])
+    // const [FIAT, setFIAT] = useState({balance : 0, history : []})
     const [prices, setPrices] = useState({})
     const [loading, setLoading] = useState(true)
     const [status, setStatus] = useState("")
     const {user} = useAuthContext()
+    const FIAT = {
+        balance : 0,
+        address : "whosejoe",
+        history : [],
+    }
+
+    const getFIAT = () => {
+        
+    }
 
     const getBTC = async () => {
         setStatus("Getting BTC Balance")
@@ -65,6 +77,12 @@ const UserContextProvider = ({children}) => {
     
     const getWallet = async () => {
         setLoading(true)
+        setStatus("Getting User NFTs")
+        const nfts = await Axios.get(`${BaseUri}/api/nft/get`)
+        setStatus("Getting User Tokens")
+        const toks = await Axios.get(`${BaseUri}/api/tok/get`)
+        setNFT(nfts.data.NFTs)
+        setTOK(toks.data.Tokens)
         setStatus("Getting User Balances")
         const balance = await Axios.get(`${BaseUri}/api/wallet/balance`)
         setStatus("Getting User Transaction Histories")
@@ -84,6 +102,11 @@ const UserContextProvider = ({children}) => {
             address : balance.data.result.XRP.address,
             history : history.data.result.XRP,
         })
+        // setFIAT({
+        //     balance : 1000,
+        //     address : "ASDHM10231211",
+        //     history : history.data.result.FIAT,
+        // })
         setLoading(false)
     }
 
@@ -99,6 +122,7 @@ const UserContextProvider = ({children}) => {
     useEffect(() => {
         if(user !== null) {
             getWallet()
+            setLoading(false)
         }
         else {
             setLoading(false)
@@ -137,7 +161,7 @@ const UserContextProvider = ({children}) => {
     }, [user])
 
     return (
-        <UserContext.Provider value = {{BTC, ETH, XRP, prices, getBTC, getETH, getXRP, transfer}}>
+        <UserContext.Provider value = {{status, FIAT, BTC, ETH, XRP, NFT, TOK, prices, getFIAT , getBTC, getETH, getXRP, transfer}}>
             {loading ? <Loading text = {status} /> : children}
         </UserContext.Provider>
     )

@@ -1,5 +1,6 @@
 import React from 'react'
 import Logo from "../assets/Icons/Colour Inverse.svg"
+import Alarm from "../assets/Icons/Main Nav/alarm-bell Copy.svg"
 
 const Header = () => {
 
@@ -8,19 +9,18 @@ const Header = () => {
             backgroundColor: "var(--clr-header)",
             height : "10vh",
             display : "flex",
+            padding : "0 2.4rem",
             alignItems : "center",
-            padding : "0 2rem",
             justifyContent : "space-between",
         },
         FlexContainer : {
             display : "flex",
             alignItems : "center",
-            gap : "0.2rem",
+            gap : "2.5rem",
         },
         Logo : {
-            width : "4rem",
-            height : "4rem",
-            backgroundColor : "red",
+            width : "15.3rem",
+            height : "4.8rem",
         },
         Text : {
             color : "white",
@@ -37,25 +37,26 @@ const Header = () => {
             borderRadius : "50%",
         },
         Profile : {
-            width : "5rem",
-            height : "5rem",
+            width : "4.8rem",
+            height : "4.8rem",
             color : "white",
             cursor : "pointer",
         },
         Notification : {
-            width : "2.5rem",
-            height : "2.5rem",
-            color : "white",
+            width : "3rem",
+            height : "3rem",
+            filter: "invert(100%) sepia(0%) saturate(7420%) hue-rotate(316deg) brightness(123%) contrast(119%)",
             cursor : "pointer",
         }
     }
 
     return (
         <nav style = {styles.Header} >
-            <img src = {Logo} />
-            <div style = {{...styles.FlexContainer, gap : "1.5rem"}} >
-                <ion-icon style = {styles.Notification} name="notifications-outline"></ion-icon>
+            <img src = {Logo}/>
+            <div style = {styles.FlexContainer} >
+                <img src = {Alarm} />
                 <ion-icon style = {styles.Profile} name="person-circle-outline"></ion-icon>
+                {/* <ion-icon style = {styles.Notification} name="notifications-outline"></ion-icon> */}
             </div>
         </nav>
     )

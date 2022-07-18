@@ -25,7 +25,7 @@ const ETH = () => {
 
     return(
         <>
-            <ChainInfo refresh = {getETH} handeModalChange = {handeModalChange} currency = "ETH" balance = {ETH?.balance} value = {(prices?.ETH*ETH?.balance).toFixed(5)} address = {ETH?.address} history = {ETH?.history} txuri = "https://rinkeby.etherscan.io/tx/" adduri = "https://rinkeby.etherscan.io/address/" />
+            <ChainInfo refresh = {getETH} handeModalChange = {handeModalChange} currency = "ETH" balance = {ETH?.balance} value = {(prices?.ETH*ETH?.balance).toFixed(5)} address = {ETH?.address} history = {ETH?.history} />
             <Transfer transfer = {handleTransfer} handeModalChange = {handeModalChange} active = {active} currency = "ETH" balance = {ETH?.balance} value = {(prices?.ETH*ETH?.balance).toFixed(5)} address = {ETH?.address} history = {ETH?.history} />
         </>
     )

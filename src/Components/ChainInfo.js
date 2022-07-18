@@ -1,7 +1,7 @@
 import React from'react'
 import Table from './Table/Table'
 
-const ChainInfo = ({currency, balance, value, address, refresh, txuri, adduri, history, handeModalChange}) => {
+const ChainInfo = ({currency, balance, value, address, refresh, txuri, adduri, history, handeModalChange, headers}) => {
 
     const styles = {
         Container : {
@@ -9,41 +9,43 @@ const ChainInfo = ({currency, balance, value, address, refresh, txuri, adduri, h
             flexDirection : "column",
             width : "100%",
             height : "100%",
-            padding : "1rem 0",
-            gap : "7rem",
+            padding : "2rem 0",
+            justifyContent : "space-between",
         },
         FlexContainer : {
             display : "flex",
             flexDirection : "column",
             alignItems : "center",
-            gap : "0.8rem",
+            gap : "1rem",
             fontSize : "1.2rem",
             justifyContent : "space-between",
         },
         Balance : {
-            fontSize : "3em",
-            fontWeight : "400",
+            fontSize : "4.6rem",
+            fontFamily : "font-light",
         },
         Value : {
-            fontSize : "0.8em",
-            marginTop : "-1.8em"
+            fontSize : "1.4rem",
+            marginTop : "-1rem"
         },
         Address : {
-            fontSize : "0.8em",
+            fontSize : "1.6rem",
             padding : "0.5em 1.5em",
             borderRadius : "100vw",
-            backgroundColor : "var(--clr-white-dark)",
-            width : "35ch",
+            backgroundColor : "var(--clr-white-fill)",
+            width : "45ch",
             display : "flex",
             justifyContent : "space-between",
             alignItems : "center",
             cursor : "pointer",
+            marginTop : "0.5rem",
         },
         Send : {
-            fontSize : "1em",
-            padding : "1em",
+            fontSize : "1.8rem",
+            padding : "1.8rem",
             cursor : "pointer",
             backgroundColor : "var(--clr-green)",
+            marginTop : "0.2rem",
         },
         CardWrapper : {
             display : "flex",
@@ -69,16 +71,34 @@ const ChainInfo = ({currency, balance, value, address, refresh, txuri, adduri, h
     return(
         <div style = {styles.Container} >
             <div style={styles.FlexContainer} >
-                <h1 style = {styles.Balance} >{balance} {currency}</h1>
-                <p style = {styles.Value} >₹{value}</p>
+                <p style = {styles.Balance} >
+                    {
+                        balance
+                        ? `${balance} ${currency}`
+                        : "Loading..."
+                    }
+                </p>
+                <p style = {styles.Value} >
+                    {
+                        value 
+                        ? `₹${value}`
+                        : "Loading..."
+                    }
+                </p>
                 <div style = {styles.Address} onClick={() => {navigator.clipboard.writeText(address)}} >
-                    <p>{`${address?.slice(0, 10)}....${address?.slice(address?.length-4, address?.length)}`}</p>
+                    <p>
+                        {
+                            address 
+                            ? address.slice(0, 10) + "...." + address.slice(address.length-4, address.length)
+                            : "Loading..."
+                        }
+                    </p>
                     <ion-icon name="copy-outline" style = {styles.Copy} />
                 </div>
                 <div style = {styles.Send} onClick = {() => handeModalChange("open")} >Send</div>
             </div>
             <Table 
-                headers = {[
+                headers = {headers ? headers : [
                     "Transaction ID",
                     "Type",
                     "From/To",
@@ -88,9 +108,9 @@ const ChainInfo = ({currency, balance, value, address, refresh, txuri, adduri, h
                 ]}
                 minCellWidth = "120"
                 history = {history}
-                maxWidth = "88vw"
+                width = "87vw"
                 refresh = {refresh}
-                maxHeight = "50vh"
+                maxHeight = "38vh"
                 txuri = {txuri}
                 adduri = {adduri}
             />

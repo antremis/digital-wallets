@@ -1,7 +1,6 @@
 
 .tx-table {
     height : max-content;
-    width: max-content;
     display: grid;
     overflow: auto;
     margin : auto;
@@ -13,7 +12,7 @@
         minmax(max-content, 1fr) 
         minmax(max-content, 1fr) 
         minmax(max-content, 1fr);
-    border : 1px solid var(--clr-white-dark);
+    border : 1px solid var(--clr-white-border);
     margin : 2rem 0
 }
   
@@ -26,7 +25,7 @@
 .tx-table th {
     position: relative;
     font-size: 1.8rem;
-    background-color: var(--clr-white-dark);
+    background-color: var(--clr-white-fill);
 }
   
 .tx-table th,
@@ -35,6 +34,7 @@
     font-size : 1.6rem;
     padding: 2.6rem 2.0rem;
     min-width: 10rem;
+    color : var(--clr-black);
 }
   
 .tx-table th span,
@@ -46,7 +46,7 @@
 }
   
 .tx-table tr td {
-    border-top: 1px solid var(--clr-white-dark);
+    border-top: 1px solid var(--clr-white-border);
 }
   
 .resize-handle {

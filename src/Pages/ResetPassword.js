@@ -28,7 +28,7 @@ const ResetPasswword = () => {
             justifyContent : "center",
             height : "100%",
             width : "100%",
-            backgroundColor : "var(--clr-white-dark)",
+            backgroundColor : "var(--clr-white-fill)",
         },
         TextWrapper : {
             display : "flex",
@@ -60,14 +60,14 @@ const ResetPasswword = () => {
         },
         Input : {
             padding : "1rem",
-            backgroundColor : "var(--clr-white-dark)",
+            backgroundColor : "var(--clr-white-fill)",
             width : "70ch",
             marginBottom : "2rem",
-            borderBottom : "1px solid var(--clr-white-darker)",
+            borderBottom : "1px solid var(--clr-white-border)",
         },
         Button : {
             color : "white",
-            backgroundColor : validate ? "var(--clr-icon-highlight)" : "var(--clr-white-darker)",
+            backgroundColor : validate ? "var(--clr-icon-highlight)" : "var(--clr-white-dark)",
             width : "100%",
             padding : "1rem 0",
             cursor : "pointer",
@@ -83,13 +83,13 @@ const ResetPasswword = () => {
         PasswordCheckWrapper : {
             fontWeight : "400",
             fontSize : "1rem",
-            border : "1px solid var(--clr-white-darker)",
+            border : "1px solid var(--clr-white-dark)",
             margin : "0 0 2rem 0",
             padding : "2rem",
         },
         PasswordCheck : {
             margin : "1rem 0 0 2rem",
-            color : "var(--clr-white-darker)",
+            color : "var(--clr-white-dark)",
         },
     }
 
@@ -121,12 +121,8 @@ const ResetPasswword = () => {
                 </div>
                 <label style = {styles.Label} htmlFor = "signup-password" >Retype Password</label>
                 <input style = {styles.Input} id = "signup-password" type="password" placeholder = "********" value = {pass2} onChange = {(e) => setPass2(e.target.value)} />
-                <button style = {styles.Button} type="submit" >Login</button>
+                <button style = {styles.Button} type="submit" >Reset</button>
             </form>
-            <Link to = "/recover" style = {styles.Back} >
-                <ion-icon name="arrow-back-outline" />
-                Re-enter Email
-            </Link>
         </div>
     )
 }

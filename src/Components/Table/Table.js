@@ -9,7 +9,8 @@ const createHeaders = (headers) => {
   }));
 };
 
-const Table = ({ headers, minCellWidth, history, maxWidth, refresh, maxHeight, txuri, adduri }) => {
+const Table = ({ headers, minCellWidth, history, width, refresh, maxHeight }) => {
+
   const [tableHeight, setTableHeight] = useState("auto");
   const [activeIndex, setActiveIndex] = useState(null);
   const tableElement = useRef(null);
@@ -17,8 +18,8 @@ const Table = ({ headers, minCellWidth, history, maxWidth, refresh, maxHeight, t
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
-  history.sort((a,b) => {
-    return new Date(b.date) > new Date(a.date);
+  history?.sort((a,b) => {
+    return new Date(b.date) - new Date(a.date);
   });
 
   useEffect(() => {
@@ -72,8 +73,8 @@ const Table = ({ headers, minCellWidth, history, maxWidth, refresh, maxHeight, t
 
   const styles = {
 	History : {
-		fontSize : "1.5rem",
-		fontWeight : "600",
+		fontSize : "1.6rem",
+		fontFamily : "font-bold",
     display : "flex",
     alignItems : "flex-start",
 	},
@@ -81,26 +82,26 @@ const Table = ({ headers, minCellWidth, history, maxWidth, refresh, maxHeight, t
 		display : "flex",
 		justifyContent : "flex-end",
 		alignItems : "center",
-		gap : "1rem",
-		height : "5vh",
+		gap : "2rem",
+		height : "4vh",
 	},
 	Interactable : {
-		backgroundColor : "var(--clr-white-dark)",
 		borderBottom : "0.1rem solid var(--clr-white-darker)",
 		padding : "0 max(1vh, 1vw)",
 		height : "100%",
     display : "flex",
     alignItems : "center",
-    gap : "0.5rem"
+    gap : "0.5rem",
 	},
 	HR : {
 		height : "100%",
 		width : "1px",
-		backgroundColor : "var(--clr-white-dark)",
+		backgroundColor : "var(--clr-white-border)",
 	},
   Refresh : {
     fontSize : "2rem",
     cursor : "pointer",
+    marginLeft : "0.4px",
   }
   }
 
@@ -113,14 +114,14 @@ const Table = ({ headers, minCellWidth, history, maxWidth, refresh, maxHeight, t
   }, [itemsPerPage])
 
   return (
-    <div>
+    <div style = {{marginLeft : "auto"}}>
 		<p style = {styles.History} >Transaction History <ion-icon onClick = {refresh} style = {styles.Refresh} name="refresh-circle-outline" /></p>
-        <table className="tx-table" ref={tableElement} style = {{maxWidth, maxHeight}} >
+		<table className="tx-table" ref={tableElement} style = {{width, maxHeight}} >
 			<thead>
 				<tr>
 					{columns.map(({ ref, text }, i) => (
 						<th ref={ref} key={text}>
-							<span>{text}</span>
+							<span style = {{textAlign : text == "Amount" || text == "Date" ? "right" : "left"}}>{text}</span>
 							<div
 								style={{ height: tableHeight }}
 								onMouseDown={() => mouseDown(i)}
@@ -132,16 +133,16 @@ const Table = ({ headers, minCellWidth, history, maxWidth, refresh, maxHeight, t
 					))}
 				</tr>
 			</thead>
-			<TableContent history = {history?.slice(currentPage*itemsPerPage, (currentPage+1)*itemsPerPage)} txuri = {txuri} adduri = {adduri} />
-        </table>
+			<TableContent history = {history?.slice(currentPage*itemsPerPage, (currentPage+1)*itemsPerPage)} />
+		</table>
 		<div style = {styles.OptionsWrapper} >
-			<p>Items per page</p>
-			<input min = {1} max = {history?.length} style = {{...styles.Interactable, width : "10ch"}} value = {itemsPerPage} onChange = {(e) => {setItemsPerPage(e.target.value)}} type = "number" />	
-			<div style = {styles.HR} ></div>	
-			<button style = {{...styles.Interactable, cursor : "pointer"}} disabled = {currentPage === 0 ? true : false} onClick = {() => {setCurrentPage(prev => prev - 1)}} ><ion-icon name="arrow-back-outline"></ion-icon>Prev</button>	
-			<p style = {styles.Interactable} >{currentPage + 1}</p>
-			<p>of {Math.ceil(history?.length / itemsPerPage)}</p>
-			<button style = {{...styles.Interactable, cursor : "pointer"}} disabled = {currentPage + 1 === Math.ceil(history?.length / itemsPerPage) ? true : false} onClick = {() => {setCurrentPage(prev => prev + 1)}} >Next<ion-icon name="arrow-forward-outline"></ion-icon></button>
+			<p style = {{fontSize : "1.5rem"}}>Items per page:</p>
+			<input min = {1} max = {history?.length} style = {{...styles.Interactable, width : "10ch", backgroundColor : "var(--clr-white-fill)", borderBottom : "1px solid var(--clr-white-dark)"}} value = {itemsPerPage} onChange = {(e) => {setItemsPerPage(e.target.value)}} type = "number" />	
+			<div style = {styles.HR} ></div>
+			<button data-attribute="table-btn" style = {{...styles.Interactable, cursor : "pointer"}} disabled = {currentPage === 0 ? true : false} onClick = {() => {setCurrentPage(prev => prev - 1)}} >← Prev</button>	
+			<p style = {{...styles.Interactable, fontSize : "1.5rem", backgroundColor : "var(--clr-white-fill)", borderBottom : "1px solid var(--clr-white-dark)", display : "grid", placeItems : "center"}} >{currentPage + 1}</p>
+			<p style = {{fontSize : "1.5rem",}} >of {Math.ceil(history?.length / itemsPerPage)}</p>
+			<button data-attribute="table-btn" style = {{...styles.Interactable, cursor : "pointer"}} disabled = {currentPage + 1 === Math.ceil(history?.length / itemsPerPage) ? true : false} onClick = {() => {setCurrentPage(prev => prev + 1)}} >Next →</button>
 		</div>
     </div>
   );

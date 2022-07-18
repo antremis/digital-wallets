@@ -27,8 +27,8 @@ DB, pointer = db.connectSQL()
 db.createDB(pointer)
 
 client = XRP.getTestClient()
-NFTs = ETH.getNFTs()
-TOKENS = ETH.getTokens()
+# NFTs = ETH.getNFTs()
+# TOKENS = ETH.getTokens()
 
 def generateOTP(gmail):
   # create smtp session 
@@ -132,8 +132,13 @@ def signup():
         except :
             return jsonify({"message": "Missing password"}), 400
         
+        try : 
+            recovery_password = request.json["recoveryPassword"]
+        except :
+            return jsonify({"message": "Missing password"}), 400
+        
         # signup logic
-        uid = db.addNewUser(pointer, DB, username, password)
+        uid = db.addNewUser(pointer, DB, username, password, recovery_password)
         ETHwif = ETH.createWallet()
         BTCwif = BTC.createWallet()
         XRPwif = XRP.createWallet(client)
@@ -228,10 +233,12 @@ def getWalletTransaction():
     elif request.method == 'GET':
         if session.get("uid") :
             keys = db.getKeys(pointer, session["uid"])
+            
             result = {
                 "ETH" : ETH.getTransactions(keys["ETHwif"]),
                 "BTC" : BTC.getTransactions(keys["BTCwif"]),
                 "XRP" : XRP.getTransactions(keys["XRPwif"], 5, client),
+                "FIAT" : db.getFIATTransactions(),
             }
         return jsonify({"message" : "Retrieved", "result" : result}), 200
     else :
@@ -519,19 +526,18 @@ def transferNFT():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@application.route("/api/nft/balance")
+@application.route("/api/nft/get")
 def getNFTBalance():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
-    elif request.method == 'POST':
-        try : 
-            uid = request.json["uid"]
-        except :
+    elif request.method == 'GET':
+        if session.get("uid") :
+            wif = db.getETHKeys(pointer, session["uid"])
+            NFTs = ETH.getNFTs(wif)
+            return jsonify({"message" : "Success", "NFTs" : NFTs}), 200
+        else :
             return jsonify({"message": "Missing uid"}), 400
         # Get WIF from DB
-        wif = db.getETHKeys(pointer, uid)
-        balance = ETH.getNFTBalance(wif, NFTs)
-        return jsonify({"message" : "Success", "balance" : balance}), 200
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
@@ -582,25 +588,76 @@ def transferToken():
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
-@application.route("/api/tok/balance")
+@application.route("/api/tok/get")
 def getTokenBalance():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
-    elif request.method == 'POST':
-        try : 
-            uid = request.json["uid"]
-        except :
+    elif request.method == 'GET':
+        if session.get("uid") :
+            wif = db.getETHKeys(pointer, session["uid"])
+            toks = ETH.getTokens(wif)
+            return jsonify({"message" : "Success", "Tokens" : toks}), 200
+        else :
             return jsonify({"message": "Missing uid"}), 400
         # Get WIF from DB
-        wif = db.getETHKeys(pointer, uid)
-        balance = ETH.getTokenBalance(wif, TOKENS)
-        return jsonify({"message" : "Success", "balance" : balance}), 200
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
 @application.route("/api/tok/history")
 def getTokenHistory():
     pass
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Fiat Endpoints
+# ----------------------------------------------------------------------------------------------------------------------
+@application.route("/api/fiat/history")
+def getFiatHistory() :
+    if request.method == 'OPTIONS':
+        return _build_cors_preflight_response()
+    elif request.method == 'GET':
+        # Get WIF from DB
+        if session.get("uid") :
+            from datetime import datetime 
+            transactions = [
+                {
+                    "tx" : 'Akk0199A999109jm01210002999',
+                    "stock" : "Vanguard",
+                    "qty" : 1.552,
+                    "price" : 596.60,
+                    "net" : 1.552 * 596.60,
+                    "date" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
+                },
+                {
+                    "tx" : 'Akk01991gm231823h1iu2jm01210002999',
+                    "stock" : "Fund-Smith",
+                    "qty" : 1.552,
+                    "price" : 596.60,
+                    "net" : 1.552 * 596.60,
+                    "date" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
+                },
+                {
+                    "tx" : 'Akk023m1u2h312uh3123mu1201923h12999',
+                    "stock" : "Vanguard",
+                    "qty" : 1.552,
+                    "price" : 596.60,
+                    "net" : 1.552 * 596.60,
+                    "date" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
+                },
+                {
+                    "tx" : 'A312mu3192u3h1293j1i23999109jm01210002999',
+                    "stock" : "Fund-Smith",
+                    "qty" : 1.552,
+                    "price" : 596.60,
+                    "net" : 1.552 * 596.60,
+                    "date" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
+                },
+            ]
+            return jsonify({"message" : "Success", "tx_history" : transactions}), 200
+        else :
+            return jsonify({"message" : "No User logged in"}), 403
+    else :
+        return jsonify({"message" : "Unsupported Request Method"}), 400
 
 
 # ----------------------------------------------------------------------------------------------------------------------

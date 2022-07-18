@@ -12,7 +12,6 @@ import Cash from "../assets/Icons/Currencies/cash-outline.svg";
 const Wallet = () => {
 
     const {BTC, ETH, XRP, prices} = useUserContext()
-    console.log(prices)
 
     const [data] = useState([
         {
@@ -23,6 +22,7 @@ const Wallet = () => {
             balance : BTC?.balance,
             value : (prices?.BTC*BTC?.balance).toFixed(5),
             address : BTC?.address,
+            url : "/accounts/BTC"
         },
         {
             key : 2,
@@ -32,6 +32,7 @@ const Wallet = () => {
             balance : ETH?.balance,
             value : (prices?.ETH*ETH?.balance).toFixed(5),
             address : ETH?.address,
+            url : "/accounts/ETH"
         },
         {
             key : 3,
@@ -41,6 +42,7 @@ const Wallet = () => {
             balance : XRP?.balance,
             value : (prices?.XRP*XRP?.balance).toFixed(5),
             address : XRP?.address,
+            url : "/accounts/XRP"
         },
         {
             key : 4,
@@ -50,6 +52,7 @@ const Wallet = () => {
             balance : ETH?.balance,
             value : "$5000",
             address : ETH?.address,
+            url : "/accounts/TOK"
         },
         {
             key : 5,
@@ -59,6 +62,7 @@ const Wallet = () => {
             balance : ETH?.balance,
             value : "$5000",
             address : ETH?.address,
+            url : "/accounts/NFT"
         },
         {
             key : 6,
@@ -68,6 +72,7 @@ const Wallet = () => {
             balance : parseFloat(129800),
             value : "CB : 135354",
             address : "HBCDJS83927",
+            url : "/accounts/FIAT"
         }
     ])
 
@@ -94,11 +99,11 @@ const Wallet = () => {
         WalletValue : {
             gridColumn : "2 / span 1",
             gridRow : "1 / span 1",
-            padding : "2rem",
+            padding : "4rem 2rem",
             display : "flex",
             flexDirection : "column",
             justifyContent : "space-between",
-            border : "1px solid var(--clr-white-dark)",
+            border : "1px solid var(--clr-white-border)",
         },
         IMG2 : {
             gridColumn : "3 / span 1",
@@ -108,8 +113,10 @@ const Wallet = () => {
         Wrapper : {
             gridColumn : "2 / span 2",
             gridRow : "2 / span 2",
+            padding : "0 0 1rem 0",
             display : "flex",
             alignItems : "flex-end",
+            placeItems : "grid-start",
         }
     }
 
@@ -117,24 +124,24 @@ const Wallet = () => {
         <div style = {styles.FlexContainer} >
             <div style = {styles.CardWrapper} >
                 {data.map(item => (
-                    <Card key = {item.key} uri = {item.uri} name = {item.name} currency = {item.currency} balance = {item.balance} value = {item.value} address = {item.address} />
+                    <Card key = {item.key} uri = {item.uri} name = {item.name} currency = {item.currency} balance = {item.balance} value = {item.value} address = {item.address} url = {item.url} />
                 ))}
             </div>
             <div style = {styles.WalletValue} >
                 <div style = {{display : "flex", justifyContent : "space-between"}}>
-                    <p style = {{fontSize : "1.5rem", fontWeight : "600"}} >Total assets in cash</p>
-                    <p style = {{fontSize : "1.5rem"}} >profit</p>
+                    <p style = {{fontSize : "1.6rem", fontWeight : "600"}} >Total assets in cash</p>
+                    <p style = {{fontSize : "1.6rem"}} >profit</p>
                 </div>
                 <div>
-                    <p style = {{fontSize : "4.6rem"}} >{`₹ ${(prices?.BTC*BTC?.balance + prices?.ETH*ETH?.balance + prices?.XRP*XRP?.balance).toFixed(5)}`}</p>
+                    {/* <p style = {{fontSize : "4.6rem"}} >{`₹ ${(prices?.BTC*BTC?.balance + prices?.ETH*ETH?.balance + prices?.XRP*XRP?.balance).toFixed(5)}`}</p> */}
+                    <p style = {{fontSize : "calc(33vw / 10)"}} >{`₹ ${(prices?.BTC*BTC?.balance + prices?.ETH*ETH?.balance + prices?.XRP*XRP?.balance).toFixed(5)}`}</p>
                     <p style = {{fontSize : "1.4rem", marginTop : "-1rem"}} >INR</p>
                 </div>
             </div>
-            <div style = {styles.IMG2} ></div>
             <div style = {styles.Wrapper} >
                 <Table
                     headers={[
-                        "Transaction ID",
+                        "ID",
                         "Transfer Type",
                         "From",
                         "Amount",
@@ -142,8 +149,8 @@ const Wallet = () => {
                         "Status",
                     ]}
                     minCellWidth = {120}
-                    history = {[...BTC?.history, ...XRP?.history]}
-                    maxWidth = "62vw"
+                    history = {[...BTC?.history, ...ETH?.history ,...XRP?.history]}
+                    width = "62vw"
                     maxHeight = "40vh"
                 />
             </div>

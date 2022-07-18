@@ -3,17 +3,10 @@ import { useUserContext } from '../Context/UserContext';
 import ChainInfo from './ChainInfo';
 import Transfer from './Transfer';
 
-const BTC = () => {
+const FIAT = () => {
 
-    const {BTC, transfer, prices, getFIAT} = useUserContext()
+    const {FIAT, getFIAT} = useUserContext()
     const [active, setActive] = useState({transform : "translateX(100%)", opacity : "0"})
-
-    const FIAT = {
-        balance : "0",
-        address : "whosejoe",
-        hisotory : [],
-    }
-
 
     const handeModalChange = (type) => {
         if(type === "open") {
@@ -25,17 +18,15 @@ const BTC = () => {
     }
 
     const handleTransfer = (e, to, amount) => {
-        e.preventDefault()
-        transfer("btc", to, parseFloat(amount))
-        .then(result => console.log(result))
+        
     }
 
     return(
         <>
-            <ChainInfo refresh = {getBTC} currency = "BTC" balance = {BTC?.balance} value = {(prices?.BTC*BTC?.balance).toFixed(5)} address = {BTC?.address} history = {BTC?.history} txuri = "https://www.blockchain.com/btc-testnet/tx/" adduri = "https://www.blockchain.com/btc-testnet/address/" />
-            <Transfer transfer = {handleTransfer} handeModalChange = {handeModalChange} active = {active} currency = "BTC" balance = {BTC?.balance} value = {BTC?.balance * 18000} address = {BTC?.address} history = {BTC?.history} />
+            <ChainInfo refresh = {getFIAT} currency = "INR" balance = {FIAT?.balance} value = {FIAT?.balance?.toFixed(5)} address = {FIAT?.address} history = {FIAT?.history} txuri = "https://www.blockchain.com/FIAT-testnet/tx/" adduri = "https://www.blockchain.com/FIAT-testnet/address/"  headers = {["Txn ID", "Stock ID", "Quantity", "Price", "Amount", "Date"]}/>
+            <Transfer transfer = {handleTransfer} handeModalChange = {handeModalChange} active = {active} currency = "FIAT" balance = {FIAT?.balance} value = {FIAT?.balance * 18000} address = {FIAT?.address} history = {FIAT?.history} />
         </>
     )
 }
 
-export default BTC
+export default FIAT
