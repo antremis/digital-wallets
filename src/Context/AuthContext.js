@@ -9,17 +9,28 @@ const AuthContext = createContext()
 const AuthContextProvider = ({children}) => {
 
     const [user, setUser] = useState(null)
+    const [admin, setAdmin] = useState(false)
     const [loading, setLoading] = useState(false)
     const [status, setStatus] = useState("")
     const navigate = useNavigate()
+
+    const changeUser = async (username) => {
+        setStatus("Getting ETH Balance")
+        setLoading(true)
+        const response = await Axios.post(`${BaseUri}/api/admin/changeacc`, {username})
+        setUser(response.data.user)
+        setAdmin(response.data.user)
+        setStatus("")
+        setLoading(false)
+    }
 
     const handleLogin = async (email, password) => {
         setStatus("Loading User")
         setLoading(true)
         return Axios
         .post(`${BaseUri}/api/auth/login`, {username : email, password})
-        .then(data => {setUser(data.data.user);})
-        .catch(err => {return err.response.data.message})
+        .then(data => {setUser(data.data.user);setAdmin(data.data.admin)})
+        .catch(err => {window.alert(err.response.data.message)})
         .finally(() => {setLoading(false);setStatus("Loading User");})
     }
 
@@ -67,7 +78,7 @@ const AuthContextProvider = ({children}) => {
     useEffect(() => {
         Axios
         .get(`${BaseUri}/api/auth/getUser`)
-        .then(res => {setUser(res.data.user)})
+        .then(res => {setUser(res.data.user);setAdmin(res.data.admin)})
         .catch(err => console.log(err))
     }, [])
 
@@ -78,7 +89,7 @@ const AuthContextProvider = ({children}) => {
     }, [user])
 
     return (
-        <AuthContext.Provider value = {{user, handleLogin, signOut, handleSignup, getOTP, validateOTP, resetPassword}}>
+        <AuthContext.Provider value = {{user, admin, changeUser, handleLogin, signOut, handleSignup, getOTP, validateOTP, resetPassword}}>
             {loading ? <Loading text = {status} /> : children}
         </AuthContext.Provider> 
     )

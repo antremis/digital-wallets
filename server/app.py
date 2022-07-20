@@ -66,6 +66,8 @@ def temp():
 def getUser():
     if request.method == "GET" :
         if session.get("uid") :
+            if session.get("admin") :
+                return jsonify({"user" : session["uid"], "admin" : session["admin"]}), 200
             return jsonify({"user" : session["uid"]}), 200
         else :
             return jsonify({"user" : None}), 200
@@ -92,15 +94,12 @@ def login():
         user = db.checkLogin(pointer, username, password)
         if user :
             session["uid"] = user
+            if user == u2 :
+                session["admin"] = True
+                session.modified = True
+                return jsonify({"message" : "User logged in", "user" : user, "admin" : session["admin"]}), 200
             session.modified = True
             return jsonify({"message" : "User logged in", "user" : user}), 200
-            # Logic
-            # uid -> unique user ID
-            # if user["uid"] not in logged_in_users :
-            #     logged_in_users.applicationend(user["uid"])
-            #     return jsonify({"message" : "User logged in", "user" : user}), 200
-            # else :
-            #     return jsonify({"message" : "User Already Logged In", "user" : user}), 200
         else :
             return jsonify({"message" : "Invalid username or password", "user" : None}), 400
     else :
@@ -112,6 +111,8 @@ def signout() :
         return _build_cors_preflight_response()
     if request.method == 'GET':
         session.pop("uid", None)
+        if session.get("admin") :
+            session.pop("admin", None)
         return jsonify({"message" : "User Signed Out", "user" : None}), 200
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
@@ -195,7 +196,7 @@ def resetPassword():
         try : 
             password = request.json["password"]
         except :
-            return jsonify({"message": "Missing username"}), 400
+            return jsonify({"message": "Missing password"}), 400
         
         if session.get("email") :
             db.updatePassword(pointer, DB, session["email"], password)
@@ -204,6 +205,30 @@ def resetPassword():
             return jsonify({"message" : "Something Went Wrong"}), 400
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Admin Endpoints
+# ----------------------------------------------------------------------------------------------------------------------
+@application.route("/api/admin/changeacc", methods = {"POST"})
+def changeUser():
+    if request.method == "OPTIONS" :
+        return _build_cors_preflight_response()
+    elif request.method == "POST" :
+        try : 
+            username = request.json["username"]
+        except :
+            return jsonify({"message": "Missing username"}), 400
+
+        if session.get("admin") :
+            uid = db.lookup(pointer, username)
+            session["uid"] = uid
+            return jsonify({"message" : "User changed", "user" : uid}), 200
+        else :
+            return jsonify({"message" : "Not Admin"}), 400
+    else :
+        return jsonify({"message" : "Unsupported Request Method"}), 400
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Wallet Endpoints
@@ -233,11 +258,14 @@ def getWalletTransaction():
     elif request.method == 'GET':
         if session.get("uid") :
             keys = db.getKeys(pointer, session["uid"])
+            admin = False
+            if session.get("admin") :
+                admin = session["admin"]
             
             result = {
-                "ETH" : ETH.getTransactions(keys["ETHwif"]),
-                "BTC" : BTC.getTransactions(keys["BTCwif"]),
-                "XRP" : XRP.getTransactions(keys["XRPwif"], 5, client),
+                "ETH" : ETH.getTransactions(keys["ETHwif"], admin),
+                "BTC" : BTC.getTransactions(keys["BTCwif"], admin),
+                "XRP" : XRP.getTransactions(keys["XRPwif"], 5, client, admin),
                 "FIAT" : db.getFIATTransactions(),
             }
         return jsonify({"message" : "Retrieved", "result" : result}), 200
@@ -281,7 +309,7 @@ def transferEth():
     elif request.method == 'POST':
 
         try : 
-            uid_payee = request.json["uid_payee"]
+            to = request.json["to"]
         except :
             return jsonify({"message": "Missing Payee uid"}), 400
         
@@ -289,6 +317,8 @@ def transferEth():
             value = request.json["value"]
         except :
             return jsonify({"message": "Missing value"}), 400
+
+        uid_payee = db.lookup(pointer, to)
 
         if session.get("uid") :
             mnemonic_payer = db.getETHKeys(pointer, session["uid"])
@@ -321,8 +351,11 @@ def getEthHistory():
         return _build_cors_preflight_response()
     elif request.method == 'GET':
         if session.get("uid") :
+            admin = False
+            if session.get("admin") :
+                admin = session["admin"]
             wif = db.getETHKeys(pointer, session["uid"])
-            transactions = ETH.getTransactions(wif)
+            transactions = ETH.getTransactions(wif, admin)
             return jsonify({"message" : "Success", "tx_history" : transactions}), 200
         else :
             return jsonify({"message" : "No User logged in"}), 403
@@ -365,7 +398,7 @@ def transferBtc():
         return _build_cors_preflight_response()
     elif request.method == 'POST':     
         try : 
-            uid_payee = request.json["uid_payee"]
+            to = request.json["to"]
         except :
             return jsonify({"message": "Missing Payee uid"}), 400
         
@@ -373,6 +406,8 @@ def transferBtc():
             value = request.json["value"]
         except :
             return jsonify({"message": "Missing Payee uid"}), 400
+
+        uid_payee = db.lookup(pointer, to)
 
         if session.get("uid") :
             wif_payer = db.getBTCKeys(pointer, session["uid"])
@@ -406,6 +441,9 @@ def getBtcHistory():
     elif request.method == 'GET':
         # Get WIF from DB
         if session.get("uid") :
+            admin = False
+            if session.get("admin") :
+                admin = session["admin"]
             wif = db.getBTCKeys(pointer, session["uid"])
             transactions = BTC.getTransactions(wif)
             return jsonify({"message" : "Success", "tx_history" : transactions}), 200
@@ -447,14 +485,17 @@ def transferXrp():
         return _build_cors_preflight_response()
     elif request.method == 'POST':        
         try : 
-            uid_payee = request.json["uid_payee"]
+            to = request.json["to"]
         except :
-            return jsonify({"message": "Missing Payee uid"}), 400
+            return jsonify({"message": "Missing Payee username"}), 400
         
         try : 
             value = request.json["value"]
         except :
             return jsonify({"message": "Missing Payee uid"}), 400
+        
+        uid_payee = db.lookup(pointer, to)
+
         if session.get("uid") :
             wif_payer = db.getXRPKeys(pointer, session["uid"])
             wif_payee = db.getXRPKeys(pointer, uid_payee)
@@ -487,8 +528,11 @@ def getXrpHistory():
     elif request.method == 'GET':
         # Get WIF from DB
         if session.get("uid") :
+            admin = False
+            if session.get("admin") :
+                admin = session["admin"]
             wif = db.getXRPKeys(pointer, session["uid"])
-            transactions = XRP.getTransactions(wif, 5, client)
+            transactions = XRP.getTransactions(wif, 5, client, admin)
             return jsonify({"message" : "Success", "tx_history" : transactions}), 200
         else :
             return jsonify({"message" : "No User logged in"}), 403
@@ -499,30 +543,36 @@ def getXrpHistory():
 # ----------------------------------------------------------------------------------------------------------------------
 # NFT Endpoints
 # ----------------------------------------------------------------------------------------------------------------------
-@application.route("/api/nft/transfer")
+@application.route("/api/nft/transfer", methods = ["POST"])
 def transferNFT():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
-    elif request.method == 'POST':
+    elif request.method == 'POST':        
         try : 
-            uid_payer = request.json["uid_payer"]
+            to = request.json["to"]
         except :
-            return jsonify({"message": "Missing Payer uid"}), 400
+            return jsonify({"message": "Missing Payee username"}), 400
         
         try : 
-            uid_payee = request.json["uid_payee"]
+            address = request.json["address"]
         except :
-            return jsonify({"message": "Missing Payee uid"}), 400
+            return jsonify({"message": "Missing Payee username"}), 400
         
         try : 
-            id = request.json["id"]
+            amount = request.json["amount"]
         except :
-            return jsonify({"message": "Missing Payee uid"}), 400
+            return jsonify({"message": "Missing Payee username"}), 400
+        
+        uid_payee = db.lookup(pointer, to)
 
-        wif_payer = db.getETHKeys(pointer, uid_payer)
-        wif_payee = db.getETHKeys(pointer, uid_payee)
-        tx_hash = ETH.sendNFT(wif_payer, wif_payee, NFTs, id)
-        return jsonify({"message" : "Transaction Uploaded to Blockchain", "tx_hash" : tx_hash}), 200
+        if session.get("uid") :
+            wif_payer = db.getETHKeys(pointer, session["uid"])
+            wif_payee = db.getETHKeys(pointer, uid_payee)
+            tx_hash = ETH.sendNFT(wif_payer, wif_payee, address, id)
+            #tx_hash is in hex and is not json serializable so couldnt send back without processing
+            return jsonify({"message" : "Transaction Uploaded to Blockchain"}), 200
+        else :
+            return jsonify({"message" : "No User logged in"}), 403
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
 
@@ -561,32 +611,39 @@ def getNFTHistory():
 # ----------------------------------------------------------------------------------------------------------------------
 # Token Endpoints
 # ----------------------------------------------------------------------------------------------------------------------
-@application.route("/api/tok/transfer")
-def transferToken():
+@application.route("/api/tok/transfer", methods = ["POST"])
+def transferTOK():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
-    elif request.method == 'POST':
+    elif request.method == 'POST':        
         try : 
-            uid_payer = request.json["uid_payer"]
+            to = request.json["to"]
         except :
-            return jsonify({"message": "Missing Payer uid"}), 400
+            return jsonify({"message": "Missing Payee username"}), 400
         
         try : 
-            uid_payee = request.json["uid_payee"]
+            address = request.json["address"]
         except :
-            return jsonify({"message": "Missing Payee uid"}), 400
+            return jsonify({"message": "missing address"}), 400
         
         try : 
             value = request.json["value"]
         except :
-            return jsonify({"message": "Missing Payee uid"}), 400
+            return jsonify({"message": "Missing amount"}), 400
+        
+        uid_payee = db.lookup(pointer, to)
 
-        wif_payer = db.getETHKeys(pointer, uid_payer)
-        wif_payee = db.getETHKeys(pointer, uid_payee)
-        tx_hash = ETH.transferToken(wif_payer, wif_payee, TOKENS, value)
-        return jsonify({"message" : "Transaction Uploaded to Blockchain", "tx_hash" : tx_hash}), 200
+        if session.get("uid") :
+            wif_payer = db.getETHKeys(pointer, session["uid"])
+            wif_payee = db.getETHKeys(pointer, uid_payee)
+            tx_hash = ETH.sendToken(wif_payer, wif_payee, address, value)
+            #tx_hash is in hex and is not json serializable so couldnt send back without processing
+            return jsonify({"message" : "Transaction Uploaded to Blockchain"}), 200
+        else :
+            return jsonify({"message" : "No User logged in"}), 403
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 400
+
 
 @application.route("/api/tok/get")
 def getTokenBalance():

@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext, createContext} from 'react'
 // import axios from 'axios'
-import Axios from "../Axios/Axios"
+import Axios, {callAPI} from "../Axios/Axios"
 import { useAuthContext } from './AuthContext'
 import Loading from '../Components/Loading'
 import BaseUri from "./BaseUri"
@@ -113,7 +113,25 @@ const UserContextProvider = ({children}) => {
     const transfer = async (chain, to, value) => {
         setLoading(true)
         setStatus(`Transferring ${chain.toUpperCase()}`)
-        const result = await Axios.post(`${BaseUri}/api/${chain}/transfer`, {uid_payee : to, value})
+        const result = await Axios.post(`${BaseUri}/api/${chain}/transfer`, {to, value})
+        setLoading(false)
+        setStatus("")
+        return result
+    }
+
+    const transferTOK = async (to, value, address) => {
+        setLoading(true)
+        setStatus(`Transferring NFT`)
+        const result = await Axios.post(`${BaseUri}/api/tok/transfer`, {to, value, address})
+        setLoading(false)
+        setStatus("")
+        return result
+    }
+
+    const transferNFT = async (to, address, id) => {
+        setLoading(true)
+        setStatus(`Transferring NFT`)
+        const result = await Axios.post(`${BaseUri}/api/nft/transfer`, {to, address, id})
         setLoading(false)
         setStatus("")
         return result
@@ -134,22 +152,16 @@ const UserContextProvider = ({children}) => {
         if (user){
             let temp = {}
             ticker = setInterval(() => {
-                fetch("https://api.coindcx.com/exchange/ticker")
-                .then(result => result.json())
-                .then(result => {
-                    result?.forEach((coin) => {
-                        if(coin.market === "BTCINR"){
-                            temp["BTC"] = coin.last_price
-                        }
-                        else if(coin.market === "ETHINR"){
-                            temp["ETH"] = coin.last_price
-                        }
-                        else if(coin.market === "XRPINR"){
-                            temp["XRP"] = coin.last_price
-                        }
-                    })
-                    setPrices(temp)
-                })
+                Axios.get("https://rest.coinapi.io/v1/exchangerate/BTC/GBP", {headers : {'X-CoinAPI-Key': "39C108CD-65B4-48EC-92F8-CA9CF9B3D74E"}})
+                .then(data => temp["BTC"] = data.data.rate)
+                .catch(err => console.log(err))
+                Axios.get("https://rest.coinapi.io/v1/exchangerate/ETH/GBP", {headers : {'X-CoinAPI-Key': "39C108CD-65B4-48EC-92F8-CA9CF9B3D74E"}})
+                .then(data => temp["ETH"] = data.data.rate)
+                .catch(err => console.log(err))
+                Axios.get("https://rest.coinapi.io/v1/exchangerate/XRP/GBP", {headers : {'X-CoinAPI-Key': "39C108CD-65B4-48EC-92F8-CA9CF9B3D74E"}})
+                .then(data => temp["XRP"] = data.data.rate)
+                .catch(err => console.log(err))
+                setPrices(temp)
             }, 5000)
         }
         else {
@@ -161,7 +173,7 @@ const UserContextProvider = ({children}) => {
     }, [user])
 
     return (
-        <UserContext.Provider value = {{status, FIAT, BTC, ETH, XRP, NFT, TOK, prices, getFIAT , getBTC, getETH, getXRP, transfer}}>
+        <UserContext.Provider value = {{status, FIAT, BTC, ETH, XRP, NFT, TOK, prices, getFIAT , getBTC, getETH, getXRP, transfer, transferTOK, transferNFT}}>
             {loading ? <Loading text = {status} /> : children}
         </UserContext.Provider>
     )

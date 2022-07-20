@@ -8,10 +8,11 @@ import Ripple from "../assets/Icons/Currencies/Ripple.svg";
 import NonFungibleToken from "../assets/Icons/Currencies/NFT.svg";
 import Tokens from "../assets/Icons/Currencies/Tokens.svg";
 import Cash from "../assets/Icons/Currencies/cash-outline.svg";
+import Down from "../assets/Icons/Status/performance-decrease.svg";
 
 const Wallet = () => {
 
-    const {BTC, ETH, XRP, prices} = useUserContext()
+    const {FIAT, BTC, ETH, XRP, prices} = useUserContext()
 
     const [data] = useState([
         {
@@ -64,16 +65,16 @@ const Wallet = () => {
             address : ETH?.address,
             url : "/accounts/NFT"
         },
-        {
-            key : 6,
-            uri : Cash,
-            name : "FIAT Assets",
-            currency : "INR",
-            balance : parseFloat(129800),
-            value : "CB : 135354",
-            address : "HBCDJS83927",
-            url : "/accounts/FIAT"
-        }
+        // {
+        //     key : 6,
+        //     uri : Cash,
+        //     name : "FIAT Assets",
+        //     currency : "INR",
+        //     balance : FIAT?.balance,
+        //     value : FIAT?.balance,
+        //     address : "HBCDJS83927",
+        //     url : "/accounts/FIAT"
+        // }
     ])
 
     const styles = {
@@ -130,12 +131,11 @@ const Wallet = () => {
             <div style = {styles.WalletValue} >
                 <div style = {{display : "flex", justifyContent : "space-between"}}>
                     <p style = {{fontSize : "1.6rem", fontWeight : "600"}} >Total assets in cash</p>
-                    <p style = {{fontSize : "1.6rem"}} >profit</p>
+                    <p style = {{fontSize : "1.6rem", filter: "invert(17%) sepia(96%) saturate(7360%) hue-rotate(6deg) brightness(99%) contrast(118%)",}} ><img src = {Down} style = {{height : "1.6ch", marginRight : "2px"}} />24%</p>
                 </div>
                 <div>
-                    {/* <p style = {{fontSize : "4.6rem"}} >{`₹ ${(prices?.BTC*BTC?.balance + prices?.ETH*ETH?.balance + prices?.XRP*XRP?.balance).toFixed(5)}`}</p> */}
-                    <p style = {{fontSize : "calc(33vw / 10)"}} >{`₹ ${(prices?.BTC*BTC?.balance + prices?.ETH*ETH?.balance + prices?.XRP*XRP?.balance).toFixed(5)}`}</p>
-                    <p style = {{fontSize : "1.4rem", marginTop : "-1rem"}} >INR</p>
+                    <p style = {{fontSize : "calc(33vw / 10)"}} >£ {(prices?.BTC*BTC?.balance + prices?.ETH*ETH?.balance + prices?.XRP*XRP?.balance).toFixed(5)}</p>
+                    <p style = {{fontSize : "1.4rem", marginTop : "-0.8rem"}} >Pound</p>
                 </div>
             </div>
             <div style = {styles.Wrapper} >

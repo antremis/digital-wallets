@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Logo from "../assets/Icons/Colour Inverse.svg"
 import Alarm from "../assets/Icons/Main Nav/alarm-bell Copy.svg"
+import { useAuthContext } from '../Context/AuthContext'
 
 const Header = () => {
+
+    const {admin, changeUser} = useAuthContext()
+    const [username, setUsername] = useState("")
 
     const styles = {
         Header : {
@@ -50,10 +54,20 @@ const Header = () => {
         }
     }
 
+    const onAccChange = (e) => {
+        e.preventDefault()
+        changeUser(username)
+    }
+
     return (
         <nav style = {styles.Header} >
             <img src = {Logo}/>
             <div style = {styles.FlexContainer} >
+                {
+                    admin
+                    ? <form onSubmit = {onAccChange}><input name = "username" type = "text" placeholder = "username" onChange={e => setUsername(e.target.value)} /></form>
+                    : null
+                }
                 <img src = {Alarm} />
                 <ion-icon style = {styles.Profile} name="person-circle-outline"></ion-icon>
                 {/* <ion-icon style = {styles.Notification} name="notifications-outline"></ion-icon> */}

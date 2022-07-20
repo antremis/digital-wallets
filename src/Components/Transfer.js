@@ -1,16 +1,26 @@
 import React, {useState} from'react'
 
-const Transfer = ({name, address, active, handeModalChange, transfer}) => {
+const Transfer = ({name, address, active, handeModalChange, transfer, hide_amount}) => {
 
     const [to, setTo] = useState("")
     const [value, setValue] = useState("")
 
     const validate = () => {
-        if(to && value){
-            return false
+        if(hide_amount){
+            if(to){
+                return false
+            }
+            else{
+                return true
+            }
         }
         else{
-            return true
+            if(to && value){
+                return false
+            }
+            else{
+                return true
+            }
         }
     }
 
@@ -98,7 +108,7 @@ const Transfer = ({name, address, active, handeModalChange, transfer}) => {
         <form style = {{...styles.FlexContainer, ...active}} onSubmit = {(e) => transfer(e, to, value)} >
             <div style = {styles.Header} >
                 <p style = {styles.HeaderTitle} >Send</p>
-                <p style = {styles.HeaderText} >Ethereum Main Network</p>
+                <p style = {styles.HeaderText} >{name} Test Network</p>
             </div>
             <div style = {styles.InputText} >
                 <label style = {styles.Label} >From</label>
@@ -109,10 +119,15 @@ const Transfer = ({name, address, active, handeModalChange, transfer}) => {
                 <input data-attribute = "input" type = "text" style = {styles.Input} value = {to} placeholder = "Search Username" onChange = {(e) => {setTo(e.target.value)}}/> 
             </div>
             <hr style = {styles.HR} />
-            <div style = {styles.InputText} >
-                <label style = {styles.Label} >Amount</label>
-                <input data-attribute = "input" type = "text" style = {styles.Input} value = {value} placeholder = "0" onChange = {(e) => {setValue(e.target.value)}}/>
-            </div>
+            {
+                !hide_amount
+                ?   (<div style = {styles.InputText} >
+                        <label style = {styles.Label} >Amount</label>
+                        <input data-attribute = "input" type = "text" style = {styles.Input} value = {value} placeholder = "0" onChange = {(e) => {setValue(e.target.value)}}/>
+                    </div>)
+                : null
+            }
+            
             <hr style = {styles.BottomHR} />
             <div style = {styles.BottomOptions}>
                 <p style = {styles.Cancel} onClick = {() => handeModalChange("close")} >Cancel</p>

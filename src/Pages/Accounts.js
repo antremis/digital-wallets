@@ -90,11 +90,11 @@ const Accounts = () => {
     return(
         <div style = {styles.FlexContainer} >
             <div style = {styles.InvestmentWrapper} >
-                <Link to = "/accounts/FIAT" style = {styles.IconWrapper} onClick = {() => {HandleIconClick("FIAT")}} >
+                {/* <Link to = "/accounts/FIAT" style = {styles.IconWrapper} onClick = {() => {HandleIconClick("FIAT")}} >
                     <img src = {Cash} style = {styles.Icon} alt = "Fiat" />
                     <p style = {styles.CurrencyName}>Fiat</p>
                     <span style = {{...styles.Underline, ...FIAT}}></span>
-                </Link>
+                </Link> */}
                 <Link to = "/accounts/BTC" style = {styles.IconWrapper} onClick = {() => {HandleIconClick("BTC")}} >
                     <img src = {Bitcoin} style = {styles.Icon} alt = "Bitcoin" />
                     <p style = {styles.CurrencyName}>Bitcoin</p>

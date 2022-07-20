@@ -81,7 +81,7 @@ const ChainInfo = ({currency, balance, value, address, refresh, txuri, adduri, h
                 <p style = {styles.Value} >
                     {
                         value 
-                        ? `₹${value}`
+                        ? `£${value}`
                         : "Loading..."
                     }
                 </p>

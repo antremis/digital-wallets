@@ -42,7 +42,7 @@ a{
 
 :root {
 	/* font-size: min(10px, 1vw); */
-	font-size : 10px;
+	font-size : clamp(0.5vw, 10px, 1vw);
 }
 
 body{
@@ -58,9 +58,9 @@ body{
 	--clr-white : #FFFFFF;
 	font-family : 'font-regular', sans-serif;
 	color : var(--clr-black);
-	height : 100vh;
+	min-height : 100vh;
 	width : 100vw;
-	overflow : hidden;
+	/* overflow : hidden; */
 }
 
 [data-attribute = "asset-card"]{

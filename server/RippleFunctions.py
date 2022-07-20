@@ -61,43 +61,38 @@ def sendTransaction(wif_payer, wif_payee, value, client):
 
     return tx_response
 
-
 def getBalance(wif, client):
     from xrpl.account import get_balance
     address = getWallet(wif).classic_address
     return {"address" : address, "balance" : int(get_balance(address, client)/10**6)}
-    # return int(get_balance(address, client)/10**6)
 
-def getTransactionDetails(json, account_add):
+def hideText(text):
+    return f"{text[:6]}...{text[-4:]}"
+
+def getTransactionDetails(json, account_add, admin):
     from datetime import datetime
     txnData = []
     for transaction in json["transactions"]:
-        # print(txnID, amt, sender, receiver, date)
+        tx_id = transaction["tx"]["hash"]
+        fr = transaction["tx"]["Account"] if transaction["tx"]["Destination"] == account_add else transaction["tx"]["Destination"]
+        if not admin :
+            tx_id = hideText(tx_id)
+            fr = hideText(fr)
         tx = {
-            "id" : transaction["tx"]["hash"],
+            "id" : tx_id,
             "type" : "Received" if transaction["tx"]["Destination"] == account_add else "Sent",
-            "from" : transaction["tx"]["Account"],
+            "from" : fr,
             "amount" : int(transaction["tx"]["Amount"])/10**6,
             "date" : datetime.fromtimestamp(int(transaction["tx"]["date"])+946684800),
             "status" : "Completed",
-            "txuri" : f"https://testnet.xrpl.org/transactions/{transaction['tx']['hash']}",
-            "adduri" : f"https://testnet.xrpl.org/accounts/{transaction['tx']['Account']}",
+            "txuri" : f"https://testnet.xrpl.org/transactions/{tx_id}",
+            "adduri" : f"https://testnet.xrpl.org/accounts/{fr}",
             "chain" : "Ripple-Testnet",
         }
         txnData.append(tx)
     return txnData
 
-# def getTransactions(wif, client):
-#     wallet = getWallet(wif)
-#     address = wallet.classic_address
-#     response = client.request(xrpl.models.requests.AccountLines(
-#         account = address,
-#         ledger_index = "validated",
-#     ))
-#     # return response.result
-#     return getTransactionDetails(response.result, address)
-
-def getTransactions(wif, n, client):
+def getTransactions(wif, n, client, admin):
     # Look up info about your account transactions
     from xrpl.models.requests.account_tx import AccountTx
     acc = getWallet(wif).classic_address
@@ -110,7 +105,7 @@ def getTransactions(wif, n, client):
         limit=n
     )
     response = client.request(acct_tx)
-    return getTransactionDetails(response.result, acc)
+    return getTransactionDetails(response.result, acc, admin)
 
 # result = response.result
 # print("response.status: ", response.status)

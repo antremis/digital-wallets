@@ -1,9 +1,7 @@
 from web3 import Web3
 from eth_account import Account
 from web3.middleware import geth_poa_middleware
-from eth_keys import keys
 from requests import get
-
 
 w3 = Web3(Web3.HTTPProvider('https://rinkeby.infura.io/v3/cc18e8d5fdf44009911e07cdbb195f5b'))
 w3.middleware_onion.inject(geth_poa_middleware, layer=0)
@@ -73,7 +71,10 @@ def make_api_url(module, action, address, **kwargs):
 
     return url
 
-def getTransactions(wif):
+def hideText(text):
+    return f"{text[:6]}...{text[-4:]}"
+
+def getTransactions(wif, admin):
     from datetime import datetime
     ETHER_VALUE = 10 ** 18
     address = getWallet(wif).address
@@ -86,86 +87,44 @@ def getTransactions(wif):
     data2 = response2.json()["result"]
 
     data.extend(data2)
-    # data.sort(key=lambda x: int(x['timeStamp']))
-    # print(data[0])
     res = []
+    import json
     for transaction in data :
-        fr = transaction["from"] if transaction["to"] == address else transaction["to"]
+        fr = transaction["to"] if transaction["from"].lower() == address.lower() else transaction["from"]
+        tx_hash = transaction["hash"]
+        if not admin :
+            fr = hideText(fr)
+            tx_hash = hideText(tx_hash)
+
         tx = {
-            "id" : transaction["hash"],
-            "type" : "Received" if transaction["to"] == address else "Sent",
+            "id" : tx_hash,
+            "type" : "Sent" if transaction["from"].lower() == address.lower() else "Recieved",
             "from" : fr,
             "amount" : int(transaction["value"])/ETHER_VALUE,
             "date" : datetime.fromtimestamp(int(transaction["timeStamp"])),
             "status" : "Completed",
-            "txuri" : f"https://rinkeby.etherscan.io/tx/{transaction['hash']}",
+            "txuri" : f"https://rinkeby.etherscan.io/tx/{tx_hash}",
             "adduri" : f"https://rinkeby.etherscan.io/address/{fr}",
             "chain" : "Ethereum-Testnet",
         }
         res.append(tx)
     return res
-    # current_balance = 0
-    # balances = []
-    # times = []
-
-    # for tx in data:
-    #     to = tx["to"]
-    #     from_addr = tx["from"]
-    #     value = int(tx["value"]) / ETHER_VALUE
-    #     if "gasPrice" in tx:
-    #         gas = int(tx["gasUsed"]) * int(tx["gasPrice"]) / ETHER_VALUE
-    #         print("Gas_Price", gas)
-    #     else:
-    #         gas = int(tx["gasUsed"]) / ETHER_VALUE
-    #         print("gas used :",gas) 
-    #     time = datetime.fromtimestamp(int(tx['timeStamp']))
-    #     money_in = to.lower() == address.lower()
-
-    #     if money_in:
-    #         current_balance += value
-    #     else:
-    #         current_balance -= value + gas
-
-    #     balances.append(current_balance)
-    #     times.append(time)
 
 
 # --------------------------------------Tokens--------------------------------------
 
-
-# def getTokens():
-#     import json
-#     data = []
-
-#     with open("tokens.tsv", "r") as f:
-#         lines = f.readlines()
-#         for line in lines :
-#             t = line.split('\t')
-#             temp = {}
-#             temp["name"] = t[0]
-#             temp["address"] = t[1]
-#             temp["abi"] = t[2]
-#             data.append(temp)
-
-#     tokens = []
-
-#     for token_data in data :
-#         contract_address = Web3.toChecksumAddress(token_data["address"])
-#         contract_abi = json.loads(token_data["abi"])
-#         token = w3.eth.contract(address=contract_address, abi=contract_abi) 
-#         token_address = token.address
-#         tokens.append({"token" : token, "address" : token_address})
-    
-#     return tokens
+def getABI(cont_address):
+    api_key = "5HFE5GJ7M91VYTAF45XKSM6X5CRZVKZIEJ"
+    response = get(f"https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address={cont_address}&apikey={api_key}").json()
+    return response["result"]
 
 def getTokens(wif):
-    import requests
     import json
     address = getWallet(wif).address
     url = f"https://deep-index.moralis.io/api/v2/{address}/erc20?chain=rinkeby"
 
     header = { 'X-API-Key' : 'cGGg1WebTB7vFY6jU77F7nbND6ciGWuznciXbApmtMTiFWA3vwzydNSS1AnEY7c6' }
-    response = requests.get(url,headers=header)
+    response = get(url,headers=header)
     data = json.loads(response.text)
     assets_data = []
     for asset in data:
@@ -178,119 +137,73 @@ def getTokens(wif):
         assets_data.append(asset_data)
     return assets_data
 
-# def getTokenBalance(wif, token):
-#     wall_address = getWallet(wif).address
-#     wall_address = Web3.toChecksumAddress(wall_address)
-#     token_balance = token.functions.balanceOf(wall_address).call()
-#     return token_balance
+def buildTokenTransaction(payer_wif, payee_wif, token, amount):
+    payer_wallet = getWallet(payer_wif)
+    payee_wallet = getWallet(payee_wif)
+    amount = int(amount*10**18)
+    print(payer_wallet.address, payee_wallet.address, amount)
+    transaction = token.functions.transfer(payee_wallet.address, amount).buildTransaction({
+            'from': payer_wallet.address,
+            'nonce': w3.eth.get_transaction_count(payer_wallet.address),
+            'gas': 1000000,
+            'gasPrice': w3.toWei("70", "gwei"),
+    })
+    wall_addres = Web3.toChecksumAddress(payer_wallet.address)
+    signed_tx = w3.eth.account.sign_transaction(transaction, payer_wallet.privateKey)
+    return signed_tx
 
-# def buildTokenTransaction(payer_wif,payee_wif,token, amount):
-#     payer_wallet = getWallet(payer_wif)
-#     payee_wallet = getWallet(payee_wif)
-#     transaction = token.functions.transfer(payee_wallet.address, amount).buildTransaction()
-#     wall_addres = Web3.toChecksumAddress(wall_addres)
-#     transaction.update({ 'gas' : 70000 })
-#     transaction.update({ 'nonce' : w3.eth.get_transaction_count(payer_wallet.address)})
-#     signed_tx = w3.eth.account.sign_transaction(transaction, payer_wallet.private_key)
-#     return signed_tx
-
-# def transferToken(payer_wif,payee_wif,token, amount):
-#     signed_tx = buildTokenTransaction(payer_wif,payee_wif,token, amount)
-#     txn_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
-#     txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
-#     print('Transaction receipt : ',txn_receipt)
-
+def sendToken(payer_wif,payee_wif, address, amount):
+    import json
+    contract_address = Web3.toChecksumAddress(address)
+    contract_abi = json.loads(getABI(address))
+    token = w3.eth.contract(address=contract_address, abi=contract_abi)
+    signed_tx = buildTokenTransaction(payer_wif, payee_wif, token, amount)
+    txn_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+    return txn_receipt
 
 #----------------------------------------------- dealing with nft --------------------------------------------
 
+def buildNFTTransaction(payer_wif, payee_wif, nft, nft_id):
+    payer_wallet = getWallet(payer_wif)
+    payee_wallet = getWallet(payee_wif)
+    wall_address = payer_wallet.address
+    wall2_address = payee_wallet.address
+    nft_transaction = nft.functions.transferFrom(wall_address, wall2_address, nft_id).buildTransaction(
+    {
+            'from': wall_address,
+            'nonce': w3.eth.get_transaction_count(wall_address),
+            'gas': 1000000,
+            'gasPrice': w3.toWei("70", "gwei"),
+    }
+    )
+    nft_signed_tx = w3.eth.account.sign_transaction(nft_transaction, payer_wallet.privateKey)
+    return nft_signed_tx
 
-# def getNFTs():
-#     import json
-#     data = []
-
-#     with open("nfts.tsv", "r") as f:
-#         lines = f.readlines()
-#         for line in lines :
-#             t = line.split('||')
-#             nft_data = {}
-#             nft_data["name"] = t[0]
-#             nft_data["address"] = t[1]
-#             nft_data["abi"] = t[2]
-#             data.append(nft_data)
-
-#     nfts = []
-
-#     for nft_data in data :
-#         nft_contract_address = Web3.toChecksumAddress(nft_data["address"]) 
-#         nft_contract_abi = json.loads(nft_data["abi"])
-#         nft_token = w3.eth.contract(address=nft_contract_address, abi=nft_contract_abi) 
-#         nft_token_address = nft_token.address
-#         nfts.append({"NFT" : nft_token, "address" : nft_token_address})
-    
-#     return nfts
-
-# address = Web3.toChecksumAddress('0x01Be0A95b30ec54Cc7333D4f3e310B494CE98576')
-
-# nft_contract_address = Web3.toChecksumAddress('0xa72eD38A9A65ac85d53fFCF17407aBE627EA6c7C') 
-# nft_abi = json.loads('[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"safeMint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"gettokenid","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]')
-# nft_contract_abi = nft_abi
-# nft_token = w3.eth.contract(address=nft_contract_address, abi=nft_contract_abi) 
-
-# def getNFTBalance(wif, nft):
-#     address = getWallet(wif).address
-#     address = Web3.toChecksumAddress(address)
-#     nft_balance = nft.functions.balanceOf(address).call()
-#     return nft_balance
-
-# def buildNFTTransaction(payer_wif, payee_wif, nft, nft_id):
-#     payer_wallet = getWallet(payer_wif)
-#     payee_wallet = getWallet(payee_wif)
-#     wall_address = payer_wallet.address
-#     wall2_address = payee_wallet.address
-#     nft_transaction = nft.functions.transferFrom(wall_address, wall2_address, nft_id).buildTransaction(
-#     {
-#             'from': wall_address,
-#             'nonce': w3.eth.get_transaction_count(wall_address),
-#             'gas': 1000000,
-#             'gasPrice': w3.toWei("70", "gwei"),
-#     }
-#     )
-#     nft_signed_tx = w3.eth.account.sign_transaction(nft_transaction, payer_wallet.private_key)
-#     return nft_signed_tx
-
-# def sendNFT(payer_wif, payee_wif, nft, nft_id):
-#     nft_signed_tx = buildNFTTransaction(payer_wif, payee_wif, nft, nft_id)
-#     nft_txn_hash = w3.eth.send_raw_transaction(nft_signed_tx.rawTransaction)
-#     return nft_txn_hash
-	
-# def getNFTID(nft_token):
-#     nft_tokenid = nft_token.functions.gettokenid().call()
-#     return nft_tokenid
+def sendNFT(payer_wif, payee_wif, address, nft_id):
+    import json
+    nft_contract_address = Web3.toChecksumAddress(address)
+    nft_contract_abi = json.loads(getABI(address))
+    nft = w3.eth.contract(address=nft_contract_address, abi=nft_contract_abi)
+    nft_signed_tx = buildNFTTransaction(payer_wif, payee_wif, nft, nft_id)
+    nft_txn_hash = w3.eth.send_raw_transaction(nft_signed_tx.rawTransaction)
+    return nft_txn_hash
 
 def getNFTs(wif) :
-    import requests
     import json
     address = getWallet(wif).address
     url = f"https://testnets-api.opensea.io/api/v1/assets?owner={address}&order_direction=desc&offset=0&limit=50&include_orders=false"
-    response = requests.get(url)
+    response = get(url)
     data = json.loads(response.text)
     assets_data = []
     for asset in data["assets"]:
         asset_data = {
             "name" : asset["asset_contract"]["name"],
             "symbol" : asset["asset_contract"]["symbol"],
+            "address" : asset["asset_contract"]["address"],
             "image_url" : asset["image_url"],
             "permalink" : asset["permalink"],
             "token_id" : asset["token_id"]
-
         }
-        # asset_contract = asset["asset_contract"]
-        # asset_data["name"] = asset_contract["name"]
-        # asset_data["symbol"] = asset_contract["symbol"]
-        # asset_data["image_url"] = asset["image_url"]
-        # asset_data["permalink"] = asset["permalink"]
-        # asset_data["token_id"] = asset["token_id"]
-        # print(json.dumps(asset, indent=4))
-        # print(asset_data)
         assets_data.append(asset_data)
     return assets_data

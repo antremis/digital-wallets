@@ -4,8 +4,10 @@ import Transfer from './Transfer'
 
 const NFT = () => {
 
-    const {ETH, NFT, prices} = useUserContext()
+    const {ETH, NFT, prices, transferNFT} = useUserContext()
     const [active, setActive] = useState({transform : "translateX(100%)", opacity : "0"})
+    const [id, setID] = useState(null)
+    const [address, setAddress] = useState(null)
 
     const handeModalChange = (type) => {
         if(type === "open") {
@@ -14,6 +16,12 @@ const NFT = () => {
         else {
             setActive({transform : "translateX(100%)", opacity : "0"})
         }
+    }
+
+    const handleTransfer = (e, to) => {
+        e.preventDefault()
+        transferNFT(to, address, id)
+        .then(result => console.log(result))
     }
 
     const styles = {
@@ -72,11 +80,10 @@ const NFT = () => {
             display : "flex",
             flexDirection : "column",
             alignItems : "center",
-            cursor : "pointer",
         },
         NFTIMG : {
-            width : "31rem",
-            height : "31rem",
+            width : "38vh",
+            height : "38vh",
         },
     }
 
@@ -85,7 +92,7 @@ const NFT = () => {
             <div style = {styles.Container} >
                 <div style={styles.FlexContainer} >
                     <p style = {styles.Balance} >{ETH?.balance} {"ETH"}</p>
-                    <p style = {styles.Value} >₹{(prices?.ETH*ETH?.balance).toFixed(5)}</p>
+                    <p style = {styles.Value} >£{(prices?.ETH*ETH?.balance).toFixed(5)}</p>
                     <div style = {styles.Address} onClick={() => {navigator.clipboard.writeText(ETH?.address)}} >
                         <p>{`${ETH?.address?.slice(0, 10)}....${ETH?.address?.slice(ETH?.address?.length-4, ETH?.address?.length)}`}</p>
                         <ion-icon name="copy-outline" style = {styles.Copy} />
@@ -95,25 +102,37 @@ const NFT = () => {
                 <div style = {styles.CardWrapper} >
                     {
                         NFT?.map((item, index) => (
-                                item.image_url
-                                ?   (<a key = {index} data-attribute = "asset-card" style = {styles.Card} target = "_blank" rel="noreferrer" href = {item.permalink} >
-                                        {
-                                            item.image_url
-                                            ? <div style = {{...styles.NFTIMG, backgroundImage : `url(${item.image_url})`, backgroundPosition : "center", backgroundSize : "cover"}} />
-                                            : <div style = {{...styles.NFTIMG, backgroundImage : `url(https://emedicodiary.com/images/queimg/no-image-found.png)`, backgroundPosition : "center", backgroundSize : "cover"}} />
-                                        }
-                                        <div style = {{textAlign : "center"}} >
-                                            <p style = {{marginTop : "2rem", fontSize : "1.6rem"}}>{item.name}</p>
-                                            <h2 style = {{fontSize : "2.6rem"}}>{item.symbol} {`#${item.token_id}`}</h2>
-                                            <p style = {{marginBottom : "2rem", fontSize : "2rem"}}>8K ETH time</p>
-                                        </div>
-                                    </a>)
-                                : null
-                            ))
+                            item.image_url
+                            ?   (<div key = {index} data-attribute = "asset-card" style = {styles.Card}  >
+                                    {
+                                        item.image_url
+                                        ? <a target = "_blank" rel="noreferrer" href = {item.permalink} style = {{...styles.NFTIMG, backgroundImage : `url(${item.image_url})`, backgroundPosition : "center", backgroundSize : "cover"}} />
+                                        : <div style = {{...styles.NFTIMG, backgroundImage : `url(https://emedicodiary.com/images/queimg/no-image-found.png)`, backgroundPosition : "center", backgroundSize : "cover"}} />
+                                    }
+                                    <div style = {{textAlign : "center", cursor : "pointer"}} onClick = {e => {handeModalChange("open");setID(parseInt(item.token_id));setAddress(item.address)}} >
+                                        <p style = {{marginTop : "1vh", fontSize : "1.6rem"}}>{item.name}</p>
+                                        <h2 style = {{fontSize : "2.6rem"}}>{item.symbol} {`#${item.token_id}`}</h2>
+                                        <p style = {{marginBottom : "1vh", fontSize : "2rem"}}>8K ETH time</p>
+                                    </div>
+                                </div>)
+                            // ?   (<a key = {index} data-attribute = "asset-card" style = {styles.Card} target = "_blank" rel="noreferrer" href = {item.permalink} >
+                            //         {
+                            //             item.image_url
+                            //             ? <div style = {{...styles.NFTIMG, backgroundImage : `url(${item.image_url})`, backgroundPosition : "center", backgroundSize : "cover"}} />
+                            //             : <div style = {{...styles.NFTIMG, backgroundImage : `url(https://emedicodiary.com/images/queimg/no-image-found.png)`, backgroundPosition : "center", backgroundSize : "cover"}} />
+                            //         }
+                            //         <div style = {{textAlign : "center"}} >
+                            //             <p style = {{marginTop : "1vh", fontSize : "1.6rem"}}>{item.name}</p>
+                            //             <h2 style = {{fontSize : "2.6rem"}}>{item.symbol} {`#${item.token_id}`}</h2>
+                            //             <p style = {{marginBottom : "1vh", fontSize : "2rem"}}>8K ETH time</p>
+                            //         </div>
+                            //     </a>)
+                            : null
+                        ))
                     }
                 </div>
             </div>
-            <Transfer handeModalChange = {handeModalChange} active = {active} currency = "ETH" balance = {ETH?.balance} value = {ETH?.balance * 18000} address = "0xh1jn3iu12iu31h2niu3123hm12u3ng2123g" history = {ETH?.history} />
+            <Transfer name = "Ethereum" transfer = {handleTransfer} handeModalChange = {handeModalChange} active = {active} currency = "ETH" balance = {ETH?.balance} value = {ETH?.balance * 18000} address = "0xh1jn3iu12iu31h2niu3123hm12u3ng2123g" history = {ETH?.history} hide_amount = {true} />
         </>
     )
 }

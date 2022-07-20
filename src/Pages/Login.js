@@ -18,7 +18,7 @@ const Login = () => {
             flexDirection : "column",
             alignItems : "center",
             justifyContent : "center",
-            height : "100%",
+            minHeight : "100vh",
             width : "100%",
             backgroundColor : "var(--clr-white-fill)",
         },
@@ -128,11 +128,9 @@ const Login = () => {
         e.preventDefault()
         if(type === "login"){
             handleLogin(email, password)
-            .then(data => window.alert(data))
         }
         else {
             handleSignup(email, password, recoveryEmail)
-            .then(data => window.alert(data.message))
         }
     }
 

@@ -15,7 +15,7 @@ const PasswordRecover = () => {
             flexDirection : "column",
             alignItems : "center",
             justifyContent : "center",
-            height : "100%",
+            minHeight : "100vh",
             width : "100%",
             backgroundColor : "var(--clr-white-fill)",
         },

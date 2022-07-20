@@ -30,49 +30,6 @@ def createDB(myCursor):
 		UNIQUE KEY xrpWif_UNIQUE (xrpWif)
 	);''')
 
-	myCursor.execute('''CREATE TABLE IF NOT EXISTS UserData(
-		PK varchar(64) NOT NULL,
-		userId varchar(64) NOT NULL,
-		stockId varchar(64) NOT NULL,
-		Quantity int NOT NULL,
-		Price int NOT NULL,
-		PRIMARY KEY (PK)
-	);''')
-
-	myCursor.execute('''CREATE TABLE IF NOT EXISTS StockData(
-		stockId varchar(64) NOT NULL,
-		stockName varchar(64) NOT NULL,
-		stockSymbol varchar(64) NOT NULL,
-		PRIMARY KEY (stockId)
-	);''')
-
-	myCursor.execute('''CREATE TABLE IF NOT EXISTS Transactions(
-		transactionId varchar(64) NOT NULL,
-		userId varchar(64) NOT NULL,
-		stockId varchar(64) NOT NULL,
-		Quantity int NOT NULL,
-		Price int NOT NULL,
-		transactionTime datetime NOT NULL,
-		action int NOT NULL,
-		PRIMARY KEY (transactionId)
-	);''')
-
-    # myCursor.execute('''CREATE TABLE IF NOT EXISTS KeyData(
-	# 	Kid varchar(64) NOT NULL,
-	# 	Uid varchar(64) NOT NULL,
-	# 	Type varchar(5) NOT NULL,
-	# 	wif varchar(64) NOT NULL,
-	# 	Public_Key varchar(45) NOT NULL,
-	# 	Private_Key varchar(45) NOT NULL,
-	# 	Address varchar(45) NOT NULL,
-	# 	PRIMARY KEY (Kid),
-	# 	UNIQUE KEY Kid_UNIQUE (Kid),
-	# 	UNIQUE KEY PublicKey_UNIQUE (Public_Key),
-	# 	UNIQUE KEY PrivateKey_UNIQUE (Private_Key),
-	# 	UNIQUE KEY Address_UNIQUE (Address),
-	# 	UNIQUE KEY wif_UNIQUE (wif)
-    # );''')
-
 def addNewUser(myCursor, conn, username, password, email="akash7890123@gmail.com"):
 	from uuid import uuid4
 	uid = str(uuid4())
@@ -117,7 +74,7 @@ def usernameToMail(myCursor, username):
 	result = myCursor.fetchone()
 	return result[-1]
 
-def lookup(myCursor, username, type):
+def lookup(myCursor, username):
 	# Username and type are taken as arguments
 	# Type signifies the type of blockchain
 	# Type can be BTC, ETH or XRP

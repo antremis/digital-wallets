@@ -1,17 +1,18 @@
 import React from "react";
+import { useAuthContext } from "../../Context/AuthContext";
 
-const createTableRow = (tx_id, chain, type, from, amount, date, status, txuri, adduri) => {
+const createTableRow = (tx_id, chain, type, from, amount, date, status, txuri, adduri, admin) => {
 
     return (
         <tr key = {tx_id} >
             <td>
                 <span>
                     {
-                        txuri 
+                        txuri && admin
                         ?   (<a href = {txuri} target = "_blank">
-                                {`${tx_id.slice(0, 10)}....${tx_id.slice(tx_id.length-4, tx_id.length)}`}
+                                {`${tx_id.substr(0, 6)}...${tx_id.substr(tx_id.length-4, tx_id.length)}`}
                             </a>)
-                        :   `${tx_id.slice(0, 10)}....${tx_id.slice(tx_id.length-4, tx_id.length)}`
+                        :   `${tx_id}`
                     }
                 </span>
             </td>
@@ -21,11 +22,11 @@ const createTableRow = (tx_id, chain, type, from, amount, date, status, txuri, a
             <td>
                 <span>
                     {
-                        adduri 
+                        adduri && admin
                         ?   (<a href = {adduri} target = "_blank">
-                                {`${from.slice(0, 10)}....${from.slice(from.length-4, from.length)}`}
+                                {`${from.substr(0, 6)}...${from.substr(from.length-4, from.length)}`}
                             </a>)
-                        :   `${from.slice(0, 10)}....${from.slice(from.length-4, from.length)}`
+                        :   `${from}`
                     }
                 </span>
             </td>
@@ -54,10 +55,12 @@ const createTableRow = (tx_id, chain, type, from, amount, date, status, txuri, a
 
 const TableContent = ({history, txuri, adduri}) => {
 
+    const {admin} = useAuthContext()
+
   return (
     <tbody>
         {history?.map((tx) => (
-            createTableRow(tx.id, tx.chain, tx.type, tx.from, tx.amount, tx.date, tx.status, tx.txuri, tx.adduri)
+            createTableRow(tx.id, tx.chain, tx.type, tx.from, tx.amount, tx.date, tx.status, tx.txuri, tx.adduri, admin)
         ))}
     </tbody>
   );

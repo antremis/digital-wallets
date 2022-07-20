@@ -10,17 +10,20 @@ const Landing = () => {
 
     const [wallet, setWallet] = useState({filter: "invert(52%) sepia(7%) saturate(618%) hue-rotate(178deg) brightness(92%) contrast(91%)",});
     const [account, setAccount] = useState({filter: "invert(29%) sepia(55%) saturate(2436%) hue-rotate(180deg) brightness(91%) contrast(98%)", borderRight : "2px solid black"});
-    const {signOut} = useAuthContext();
+    const {signOut, user, admin} = useAuthContext();
 
     const styles = {
+        MAIN : {
+            minHeight : "90vh",
+        },
         FlexContainer : {
             display : "flex",
             width : "100%",
+            minHeight : "90vh",
         },
         SideNav : {
             width : "5vw",
             backgroundColor : "var(--clr-white-fill)",
-            height : "90vh",
             flexDirection : "column",
             alignItems : "center",
             padding : "2rem 0",

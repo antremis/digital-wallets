@@ -52,7 +52,7 @@ const Card = ({uri, name, currency, balance, value, address, url}) => {
             <div>
                 {/* <p style = {styles.Balance} >{balance.toFixed(8)} {currency}</p> */}
                 <p style = {styles.Balance} >{balance} {currency}</p>
-                <p style = {styles.Value} >INR {value}</p>
+                <p style = {styles.Value} >£{value}</p>
             </div>
             <div style = {styles.Address} onClick={() => {navigator.clipboard.writeText(address)}} >
                 <p>{`${address.slice(0, 10)}....${address.slice(address.length-4, address.length)}`}</p>

@@ -25,8 +25,8 @@ const BTC = () => {
 
     return(
         <>
-            <ChainInfo refresh = {getBTC} currency = "BTC" balance = {BTC?.balance} value = {(prices?.BTC*BTC?.balance).toFixed(5)} address = {BTC?.address} history = {BTC?.history} />
-            <Transfer transfer = {handleTransfer} handeModalChange = {handeModalChange} active = {active} currency = "BTC" balance = {BTC?.balance} value = {BTC?.balance * 18000} address = {BTC?.address} history = {BTC?.history} />
+            <ChainInfo refresh = {getBTC} handeModalChange = {handeModalChange} currency = "BTC" balance = {BTC?.balance} value = {(prices?.BTC*BTC?.balance).toFixed(5)} address = {BTC?.address} history = {BTC?.history} />
+            <Transfer name = "Bitcoin" transfer = {handleTransfer} handeModalChange = {handeModalChange} active = {active} currency = "BTC" balance = {BTC?.balance} value = {BTC?.balance * 18000} address = {BTC?.address} history = {BTC?.history} />
         </>
     )
 }

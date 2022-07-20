@@ -12,17 +12,22 @@ def getAddress(key) :
     address = key.address
     return address
 
-def getTransactions(wif) :
+def hideText(text):
+    return f"{text[:6]}...{text[-4:]}"
+
+def getTransactions(wif, admin) :
     from datetime import datetime
     import random
     key = getKey(wif)
     transactions = key.get_transactions()
     tx_data = []
     for tx in transactions:
+        if not admin :
+            tx = hideText(tx)
         tx_data.append({
             "id" : tx,
             "type" : "Recieved",
-            "from" : "192M9182M3M9Q8YU3M12U3YM19283Y19283YMM93Y5854Y",
+            "from" : hideText("192M9182M3M9Q8YU3M12U3YM19283Y19283YMM93Y5854Y"),
             "amount" : 0.0001,
             "date" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
             "status" : "Completed",
@@ -74,6 +79,6 @@ if __name__ == "__main__" :
     # with open("var.pkl", "rb") as f:
     #     T4 = pickle.load(f)
     # print(T4.info())
-    key = getKey("cVYEqZz4vsQxNN1zhyFWLaLy9fiABcPnd6ntpmjYKKSjMPjpaHj7")
-    print(key.address)
+    # key = getKey("cVYEqZz4vsQxNN1zhyFWLaLy9fiABcPnd6ntpmjYKKSjMPjpaHj7")
+    # print(key.address)
     print("Use For Imports Only")
