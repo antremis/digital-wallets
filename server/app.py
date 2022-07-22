@@ -59,8 +59,8 @@ def getUser():
     if request.method == "GET" :
         if session.get("uid") :
             if session.get("admin") :
-                return jsonify({"user" : session["uid"], "admin" : session["admin"]}), 200
-            return jsonify({"user" : session["uid"]}), 200
+                return jsonify({"user" : db.uidToUsername(pointer, session["uid"]), "admin" : session["admin"]}), 200
+            return jsonify({"user" : db.uidToUsername(pointer, session["uid"])}), 200
         else :
             return jsonify({"user" : None}), 200
     else :
@@ -89,9 +89,9 @@ def login():
             if user == u2 :
                 session["admin"] = True
                 session.modified = True
-                return jsonify({"message" : "User logged in", "user" : user, "admin" : session["admin"]}), 200
+                return jsonify({"message" : "User logged in", "user" : db.uidToUsername(pointer, user), "admin" : session["admin"]}), 200
             session.modified = True
-            return jsonify({"message" : "User logged in", "user" : user}), 200
+            return jsonify({"message" : "User logged in", "user" : db.uidToUsername(pointer, user)}), 200
         else :
             return jsonify({"message" : "Invalid username or password", "user" : None}), 400
     else :
@@ -138,7 +138,7 @@ def signup():
         db.addUserKeys(pointer, DB, uid, BTCwif, ETHwif, XRPwif)
         session["uid"] = uid
         session.modified = True
-        return jsonify({"message" : "User added successfully", "user" : {"uid" : uid, "username" : username}}), 200
+        return jsonify({"message" : "User added successfully", "user" : None}), 200
     else :
         return jsonify({"message" : "Unsupported Request Method"}), 
         

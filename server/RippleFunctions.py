@@ -69,10 +69,13 @@ def getBalance(wif, client):
 def hideText(text):
     return f"{text[:6]}...{text[-4:]}"
 
-def getTransactionDetails(json, account_add, admin):
+def getTransactionDetails(response, account_add, admin):
     from datetime import datetime
     txnData = []
-    for transaction in json["transactions"]:
+    import json
+    with open("../config.json") as f:
+        uri = json.load(f)["RIPPLE_TESTNET_EXPLORER"]
+    for transaction in response["transactions"]:
         tx_id = transaction["tx"]["hash"]
         fr = transaction["tx"]["Account"] if transaction["tx"]["Destination"] == account_add else transaction["tx"]["Destination"]
         if not admin :
@@ -85,8 +88,8 @@ def getTransactionDetails(json, account_add, admin):
             "amount" : int(transaction["tx"]["Amount"])/10**6,
             "date" : datetime.fromtimestamp(int(transaction["tx"]["date"])+946684800),
             "status" : "Completed",
-            "txuri" : f"https://testnet.xrpl.org/transactions/{tx_id}",
-            "adduri" : f"https://testnet.xrpl.org/accounts/{fr}",
+            "txuri" : f"{uri}transactions/{tx_id}",
+            "adduri" : f"{uri}accounts/{fr}",
             "chain" : "Ripple-Testnet",
         }
         txnData.append(tx)

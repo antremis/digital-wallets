@@ -2,8 +2,12 @@ from web3 import Web3
 from eth_account import Account
 from web3.middleware import geth_poa_middleware
 from requests import get
+import json
+with open('../config.json') as f:
+    config = json.load(f)
 
-w3 = Web3(Web3.HTTPProvider('https://rinkeby.infura.io/v3/cc18e8d5fdf44009911e07cdbb195f5b'))
+INFURA_PROJECT_ID = config["INFURA_PROJECT_ID"] 
+w3 = Web3(Web3.HTTPProvider(f'https://rinkeby.infura.io/v3/{INFURA_PROJECT_ID}'))
 w3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
 #create an account....
@@ -62,7 +66,8 @@ def sendTransaction(mnemonic_payer, mnemonic_payee, Value):
 
 
 def make_api_url(module, action, address, **kwargs):
-    API_KEY = "5HFE5GJ7M91VYTAF45XKSM6X5CRZVKZIEJ"
+
+    API_KEY = config["ETHERSCAN_API_KEY"]
     BASE_URL = "https://api-rinkeby.etherscan.io/api"
     url = BASE_URL + f"?module={module}&action={action}&address={address}&apikey={API_KEY}"
 
@@ -88,7 +93,7 @@ def getTransactions(wif, admin):
 
     data.extend(data2)
     res = []
-    import json
+    uri = config["ETHEREUM_TESTNET_EXPLORER"]
     for transaction in data :
         fr = transaction["to"] if transaction["from"].lower() == address.lower() else transaction["from"]
         tx_hash = transaction["hash"]
@@ -103,8 +108,8 @@ def getTransactions(wif, admin):
             "amount" : int(transaction["value"])/ETHER_VALUE,
             "date" : datetime.fromtimestamp(int(transaction["timeStamp"])),
             "status" : "Completed",
-            "txuri" : f"https://rinkeby.etherscan.io/tx/{tx_hash}",
-            "adduri" : f"https://rinkeby.etherscan.io/address/{fr}",
+            "txuri" : f"{uri}tx/{tx_hash}",
+            "adduri" : f"{uri}address/{fr}",
             "chain" : "Ethereum-Testnet",
         }
         res.append(tx)
@@ -114,7 +119,7 @@ def getTransactions(wif, admin):
 # --------------------------------------Tokens--------------------------------------
 
 def getABI(cont_address):
-    api_key = "5HFE5GJ7M91VYTAF45XKSM6X5CRZVKZIEJ"
+    api_key = config["ETHERSCAN_API_KEY"]
     response = get(f"https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address={cont_address}&apikey={api_key}").json()
     return response["result"]
 
@@ -123,7 +128,7 @@ def getTokens(wif):
     address = getWallet(wif).address
     url = f"https://deep-index.moralis.io/api/v2/{address}/erc20?chain=rinkeby"
 
-    header = { 'X-API-Key' : 'cGGg1WebTB7vFY6jU77F7nbND6ciGWuznciXbApmtMTiFWA3vwzydNSS1AnEY7c6' }
+    header = { 'X-API-Key' : config["MORALIS_API_KEY"] }
     response = get(url,headers=header)
     data = json.loads(response.text)
     assets_data = []

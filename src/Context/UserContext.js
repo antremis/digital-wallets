@@ -29,8 +29,9 @@ const UserContextProvider = ({children}) => {
     }
 
     const getBTC = async () => {
+        setBTC({balance : 0, history : [], address : ""})
         setStatus("Getting BTC Balance")
-        setLoading(true)
+        // setLoading(true)
         const balance = await Axios.get(`${BaseUri}/api/btc/balance`)
         setStatus("Getting BTC History")
         const history = await Axios.get(`${BaseUri}/api/btc/history`)
@@ -40,13 +41,14 @@ const UserContextProvider = ({children}) => {
             address : balance.data.balance.address,
             history : history.data.tx_history,
         })
-        setLoading(false)
+        // setLoading(false)
         setStatus("")
     }
     
     const getETH = async () => {
+        setETH({balance : 0, history : [], address : ""})
         setStatus("Getting ETH Balance")
-        setLoading(true)
+        // setLoading(true)
         const balance = await Axios.get(`${BaseUri}/api/eth/balance`)
         setStatus("Getting ETH History")
         const history = await Axios.get(`${BaseUri}/api/eth/history`)
@@ -55,13 +57,14 @@ const UserContextProvider = ({children}) => {
             address : balance.data.balance.address,
             history : history.data.tx_history,
         })
-        setLoading(false)
+        // setLoading(false)
         setStatus("")
     }
     
     const getXRP = async () => {
+        setXRP({balance : 0, history : [], address : ""})
         setStatus("Getting XRP Balance")
-        setLoading(true)
+        // setLoading(true)
         const balance = await Axios.get(`${BaseUri}/api/xrp/balance`)
         setStatus("Getting XRP History")
         const history = await Axios.get(`${BaseUri}/api/xrp/history`)
@@ -70,12 +73,12 @@ const UserContextProvider = ({children}) => {
             address : balance.data.balance.address,
             history : history.data.tx_history,
         })
-        setLoading(false)
+        // setLoading(false)
         setStatus("")
     }
     
     const getWallet = async () => {
-        setLoading(true)
+        // setLoading(true)
         setStatus("Getting User NFTs")
         const nfts = await Axios.get(`${BaseUri}/api/nft/get`)
         setStatus("Getting User Tokens")
@@ -106,13 +109,13 @@ const UserContextProvider = ({children}) => {
         //     address : "ASDHM10231211",
         //     history : history.data.result.FIAT,
         // })
-        setLoading(false)
+        // setLoading(false)
     }
 
     const transfer = async (chain, to, value) => {
         // setLoading(true)
         setStatus(`Transferring ${chain.toUpperCase()}`)
-        window.alert(status)
+        window.alert(`Transferring ${chain.toUpperCase()}`)
         const result = await Axios.post(`${BaseUri}/api/${chain}/transfer`, {to, value})
         // setLoading(false)
         setStatus("")
@@ -121,8 +124,8 @@ const UserContextProvider = ({children}) => {
 
     const transferTOK = async (to, value, address) => {
         // setLoading(true)
-        setStatus(`Transferring NFT`)
-        window.alert(status)
+        setStatus(`Transferring Token`)
+        window.alert(`Transferring Token`)
         const result = await Axios.post(`${BaseUri}/api/tok/transfer`, {to, value, address})
         // setLoading(false)
         setStatus("")
@@ -132,7 +135,7 @@ const UserContextProvider = ({children}) => {
     const transferNFT = async (to, address, id) => {
         // setLoading(true)
         setStatus(`Transferring NFT`)
-        window.alert(status)
+        window.alert(`Transferring NFT`)
         const result = await Axios.post(`${BaseUri}/api/nft/transfer`, {to, address, id})
         // setLoading(false)
         setStatus("")
@@ -150,17 +153,18 @@ const UserContextProvider = ({children}) => {
     }, [user])
 
     useEffect(() => {
+        let api = ""
         const API_KEY = "C20F0724-64A3-47E4-913C-0B6E92426C48"
         let ticker
         if (user){
             let temp = {}
-            Axios.get("https://rest.coinapi.io/v1/exchangerate/BTC/GBP", {headers : {'X-CoinAPI-Key': AKASHAPI2}})
+            Axios.get("https://rest.coinapi.io/v1/exchangerate/BTC/GBP", {headers : {'X-CoinAPI-Key': API_KEY}})
             .then(data => temp["BTC"] = data.data.rate)
             .catch(err => console.log(err))
-            Axios.get("https://rest.coinapi.io/v1/exchangerate/ETH/GBP", {headers : {'X-CoinAPI-Key': AKASHAPI2}})
+            Axios.get("https://rest.coinapi.io/v1/exchangerate/ETH/GBP", {headers : {'X-CoinAPI-Key': API_KEY}})
             .then(data => temp["ETH"] = data.data.rate)
             .catch(err => console.log(err))
-            Axios.get("https://rest.coinapi.io/v1/exchangerate/XRP/GBP", {headers : {'X-CoinAPI-Key': AKASHAPI2}})
+            Axios.get("https://rest.coinapi.io/v1/exchangerate/XRP/GBP", {headers : {'X-CoinAPI-Key': API_KEY}})
             .then(data => temp["XRP"] = data.data.rate)
             .catch(err => console.log(err))
             setPrices(temp)

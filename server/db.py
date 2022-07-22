@@ -1,6 +1,9 @@
 def connectSQL():
 	import mysql.connector
-	conn = mysql.connector.connect(host="localhost", user="root", passwd="manarises")
+	import json
+	with open("../config.json") as f:
+		config = json.load(f)
+	conn = mysql.connector.connect(host=config["DB_HOST"], user=config["DB_USER"], passwd=config["DB_PASSWORD"])
 	cursor = conn.cursor()
 	cursor.execute("CREATE DATABASE IF NOT EXISTS FIL_WALLET;")
 	cursor.execute("USE FIL_WALLET;")
@@ -74,13 +77,18 @@ def usernameToMail(myCursor, username):
 	result = myCursor.fetchone()
 	return result[-1]
 
+def uidToUsername(myCursor, uid) :
+	myCursor.execute(f'SELECT * from LOGIN where Uid="{uid}";')
+	result = myCursor.fetchone()
+	return result[1]
+
 def lookup(myCursor, username):
 	# Username and type are taken as arguments
 	# Type signifies the type of blockchain
 	# Type can be BTC, ETH or XRP
 	# The function returns the WIF of specific type
 	# myCursor.execute(f'SELECT * from keydata, login where Uid=UKid and LOWER(username) LIKE LOWER("{username}");')
-	myCursor.execute(f'SELECT * from KeyData, LOGIN where Uid=UKid and username LIKE "{username}";')
+	myCursor.execute(f'SELECT * from LOGIN where username LIKE "{username}";')
 	result = myCursor.fetchone()
 	return result[0]
 

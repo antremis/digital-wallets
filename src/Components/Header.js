@@ -5,7 +5,7 @@ import { useAuthContext } from '../Context/AuthContext'
 
 const Header = () => {
 
-    const {admin, changeUser} = useAuthContext()
+    const {user, changeUser} = useAuthContext()
     const [username, setUsername] = useState("")
 
     const styles = {
@@ -63,12 +63,13 @@ const Header = () => {
         <nav style = {styles.Header} >
             <img src = {Logo}/>
             <div style = {styles.FlexContainer} >
-                {
+                <p style = {{color : "white", fontSize : "2rem"}} >{user}</p>
+                {/* {
                     admin
                     ? <form onSubmit = {onAccChange}><input name = "username" type = "text" placeholder = "username" onChange={e => setUsername(e.target.value)} /></form>
                     : null
-                }
-                <img src = {Alarm} />
+                } */}
+                <img src = {Alarm} style = {styles.Notification} />
                 <ion-icon style = {styles.Profile} name="person-circle-outline"></ion-icon>
                 {/* <ion-icon style = {styles.Notification} name="notifications-outline"></ion-icon> */}
             </div>

@@ -18,6 +18,9 @@ def hideText(text):
 def getTransactions(wif, admin) :
     from datetime import datetime
     import random
+    import json
+    with open("../config.json") as f:
+        uri = json.load(f)["BITCOIN_TESTNET_EXPLORER"]
     key = getKey(wif)
     transactions = key.get_transactions()
     tx_data = []
@@ -31,8 +34,8 @@ def getTransactions(wif, admin) :
             "amount" : 0.0001,
             "date" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
             "status" : "Completed",
-            "txuri" : f"https://www.blockchain.com/btc-testnet/tx/{tx}",
-            "adduri" : "https://www.blockchain.com/btc-testnet/address/192M9182M3M9Q8YU3M12U3YM19283Y19283YMM93Y5854Y",
+            "txuri" : f"{uri}tx/{tx}",
+            "adduri" : "{uri}address/192M9182M3M9Q8YU3M12U3YM19283Y19283YMM93Y5854Y",
             "chain" : "Bitcoin-Testnet",
         })
     return tx_data
