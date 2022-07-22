@@ -106,16 +106,3 @@ def getTransactions(wif, n, client, admin):
     )
     response = client.request(acct_tx)
     return getTransactionDetails(response.result, acc, admin)
-
-# result = response.result
-# print("response.status: ", response.status)
-# import json
-# print(json.dumps(response.result, indent=4, sort_keys=True))
-
-# def check_non_xrp_balance(wallet):
-#     print("Getting hot address balances...")
-#     response = client.request(xrpl.models.requests.AccountLines(
-#         account=wallet.classic_address,
-#         ledger_index="validated",
-#     ))
-#     print("\n\n", response)

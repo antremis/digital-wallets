@@ -141,7 +141,6 @@ def buildTokenTransaction(payer_wif, payee_wif, token, amount):
     payer_wallet = getWallet(payer_wif)
     payee_wallet = getWallet(payee_wif)
     amount = int(amount*10**18)
-    print(payer_wallet.address, payee_wallet.address, amount)
     transaction = token.functions.transfer(payee_wallet.address, amount).buildTransaction({
             'from': payer_wallet.address,
             'nonce': w3.eth.get_transaction_count(payer_wallet.address),

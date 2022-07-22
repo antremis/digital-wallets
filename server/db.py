@@ -80,7 +80,7 @@ def lookup(myCursor, username):
 	# Type can be BTC, ETH or XRP
 	# The function returns the WIF of specific type
 	# myCursor.execute(f'SELECT * from keydata, login where Uid=UKid and LOWER(username) LIKE LOWER("{username}");')
-	myCursor.execute(f'SELECT * from KeyData, login where Uid=UKid and username LIKE "{username}";')
+	myCursor.execute(f'SELECT * from KeyData, LOGIN where Uid=UKid and username LIKE "{username}";')
 	result = myCursor.fetchone()
 	return result[0]
 
@@ -104,102 +104,10 @@ def getETHKeys(myCursor, uid) :
 	result = myCursor.fetchone()
 	return result[2]
 
-def getStockName(stockId):
-	myCursor, conn = connectSQL()
-	myCursor.execute(f'SELECT stockName FROM StockData WHERE stockId="{stockId}";')
-	res = myCursor.fetchone()
-	conn.close()
-    
-	str = ''
-	for item in res:
-		str = str + item
-    
-	return str
-
 def getXRPKeys(myCursor, uid) :
 	myCursor.execute(f'SELECT * FROM KeyData WHERE UKid = "{uid}";')
 	result = myCursor.fetchone()
 	return result[3]
 
-def getFIATTransactions():
-	from datetime import datetime
-	import random
-	transactions = [
-		{
-			"id" : 'Akk0199A999109jm01210002999',
-			"type" : "Vanguard",
-			"from" : 1.552,
-			"amount" : 596.60,
-			"date" : 1.552 * 596.60,
-			"status" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
-		},
-		{
-			"tx" : 'Akk01991gm231823h1iu2jm01210002999',
-			"stock" : "Fund-Smith",
-			"qty" : 1.552,
-			"price" : 596.60,
-			"net" : 1.552 * 596.60,
-			"date" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
-		},
-		{
-			"tx" : 'Akk023m1u2h312uh3123mu1201923h12999',
-			"stock" : "Vanguard",
-			"qty" : 1.552,
-			"price" : 596.60,
-			"net" : 1.552 * 596.60,
-			"date" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
-		},
-		{
-			"tx" : 'A312mu3192u3h1293j1i23999109jm01210002999',
-			"stock" : "Fund-Smith",
-			"qty" : 1.552,
-			"price" : 596.60,
-			"net" : 1.552 * 596.60,
-			"date" : datetime.fromtimestamp(random.randint(1655252379, 1657252379)),
-		},
-	]
-	return transactions
-
-# def getFIATTransactions(userId):
-#     myCursor, conn = connectSQL()
-#     myCursor.execute(f'SELECT transactionId, stockId, Quantity, price, transactionTime, action FROM Transactions WHERE userId="{userId}";')
-#     res = myCursor.fetchall()
-#     print(res)
-#     conn.close()
-#     print(res)
-#     lst_main=[]
-#     for x in res:
-#         lsst=[]
-#         for index,value in enumerate(x):
-#             if index==0:
-#                 lsst.append(value)
-#             if index==1 :
-#                 a=getStockName(value)
-#                 lsst.append(a)
-#             if index==2 :
-#                 lsst.append(value)
-#             if index == 3:
-#                 lsst.append(value)
-#                 z=x[2] *x[3]
-#                 lsst.append(z)
-                
-#             if index==4:
-#                 lsst.append(value)
-                
-#             if index==5:
-#                 lsst.append(value)
-
-                
-#         lst_main.append(lsst)      
-# #     print(lst_main)
-#     return lst_main
-
 if __name__=="__main__":
-	pass
-	# myCursor, conn = connectSQL()
-	# myCursor.execute(f'INSERT INTO keyData VALUES("test-kid", "65228210-24ca-4cd3-b806-0488b41345a5", "BTC", "test-wif", "test-public", "test-private", "test-add");')
-	# conn.commit()
-	# conn.close()
-	# print(getPrivateKey("65228210-24ca-4cd3-b806-0488b41345a5", "BTC"))
-	# print(getAddress("65228210-24ca-4cd3-b806-0488b41345a5", "BTC"))
-	# print(getPublicKey("65228210-24ca-4cd3-b806-0488b41345a5", "BTC"))
+	print("This is a module")

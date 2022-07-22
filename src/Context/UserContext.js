@@ -1,6 +1,5 @@
 import React, {useEffect, useState, useContext, createContext} from 'react'
-// import axios from 'axios'
-import Axios, {callAPI} from "../Axios/Axios"
+import Axios from "../Axios/Axios"
 import { useAuthContext } from './AuthContext'
 import Loading from '../Components/Loading'
 import BaseUri from "./BaseUri"
@@ -111,28 +110,31 @@ const UserContextProvider = ({children}) => {
     }
 
     const transfer = async (chain, to, value) => {
-        setLoading(true)
+        // setLoading(true)
         setStatus(`Transferring ${chain.toUpperCase()}`)
+        window.alert(status)
         const result = await Axios.post(`${BaseUri}/api/${chain}/transfer`, {to, value})
-        setLoading(false)
+        // setLoading(false)
         setStatus("")
         return result
     }
 
     const transferTOK = async (to, value, address) => {
-        setLoading(true)
+        // setLoading(true)
         setStatus(`Transferring NFT`)
+        window.alert(status)
         const result = await Axios.post(`${BaseUri}/api/tok/transfer`, {to, value, address})
-        setLoading(false)
+        // setLoading(false)
         setStatus("")
         return result
     }
 
     const transferNFT = async (to, address, id) => {
-        setLoading(true)
+        // setLoading(true)
         setStatus(`Transferring NFT`)
+        window.alert(status)
         const result = await Axios.post(`${BaseUri}/api/nft/transfer`, {to, address, id})
-        setLoading(false)
+        // setLoading(false)
         setStatus("")
         return result
     }
@@ -148,21 +150,32 @@ const UserContextProvider = ({children}) => {
     }, [user])
 
     useEffect(() => {
+        const API_KEY = "C20F0724-64A3-47E4-913C-0B6E92426C48"
         let ticker
         if (user){
             let temp = {}
-            ticker = setInterval(() => {
-                Axios.get("https://rest.coinapi.io/v1/exchangerate/BTC/GBP", {headers : {'X-CoinAPI-Key': "39C108CD-65B4-48EC-92F8-CA9CF9B3D74E"}})
-                .then(data => temp["BTC"] = data.data.rate)
-                .catch(err => console.log(err))
-                Axios.get("https://rest.coinapi.io/v1/exchangerate/ETH/GBP", {headers : {'X-CoinAPI-Key': "39C108CD-65B4-48EC-92F8-CA9CF9B3D74E"}})
-                .then(data => temp["ETH"] = data.data.rate)
-                .catch(err => console.log(err))
-                Axios.get("https://rest.coinapi.io/v1/exchangerate/XRP/GBP", {headers : {'X-CoinAPI-Key': "39C108CD-65B4-48EC-92F8-CA9CF9B3D74E"}})
-                .then(data => temp["XRP"] = data.data.rate)
-                .catch(err => console.log(err))
-                setPrices(temp)
-            }, 5000)
+            Axios.get("https://rest.coinapi.io/v1/exchangerate/BTC/GBP", {headers : {'X-CoinAPI-Key': AKASHAPI2}})
+            .then(data => temp["BTC"] = data.data.rate)
+            .catch(err => console.log(err))
+            Axios.get("https://rest.coinapi.io/v1/exchangerate/ETH/GBP", {headers : {'X-CoinAPI-Key': AKASHAPI2}})
+            .then(data => temp["ETH"] = data.data.rate)
+            .catch(err => console.log(err))
+            Axios.get("https://rest.coinapi.io/v1/exchangerate/XRP/GBP", {headers : {'X-CoinAPI-Key': AKASHAPI2}})
+            .then(data => temp["XRP"] = data.data.rate)
+            .catch(err => console.log(err))
+            setPrices(temp)
+            // ticker = setInterval(() => {
+            //     Axios.get("https://rest.coinapi.io/v1/exchangerate/BTC/GBP", {headers : {'X-CoinAPI-Key': YATINAPI2}})
+            //     .then(data => temp["BTC"] = data.data.rate)
+            //     .catch(err => console.log(err))
+            //     Axios.get("https://rest.coinapi.io/v1/exchangerate/ETH/GBP", {headers : {'X-CoinAPI-Key': YATINAPI2}})
+            //     .then(data => temp["ETH"] = data.data.rate)
+            //     .catch(err => console.log(err))
+            //     Axios.get("https://rest.coinapi.io/v1/exchangerate/XRP/GBP", {headers : {'X-CoinAPI-Key': YATINAPI2}})
+            //     .then(data => temp["XRP"] = data.data.rate)
+            //     .catch(err => console.log(err))
+            //     setPrices(temp)
+            // }, 60000)
         }
         else {
             clearInterval(ticker)

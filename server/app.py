@@ -1,6 +1,5 @@
 from flask import Flask, request, session, jsonify, make_response
 from flask_cors import CORS
-from flask_session import Session
 import db
 import RippleFunctions as XRP
 import BitcoinFunctions as BTC
@@ -11,41 +10,34 @@ import smtplib
 u1 = "2268b31c-2239-4280-9414-e98f166c94c0"
 u2 = "69906b1e-ddb4-471f-a2ee-6a435eaa879b"
 
+
 application = Flask(__name__, )
+application.secret_key = "cnpr9qm3yxrq3yr73r77y2m83ry293zr8y938ru"
+application.config['SESSION_TYPE'] = 'filesystem'
 
 CORS(application, supports_credentials=True)
-# server_session = Session()
-# logged_in_users = []
-
-# def loggedIn(uid) :
-#     if uid in logged_in_users :
-#         return True
-#     else :
-#         return False
 
 DB, pointer = db.connectSQL()
 db.createDB(pointer)
 
 client = XRP.getTestClient()
-# NFTs = ETH.getNFTs()
-# TOKENS = ETH.getTokens()
 
 def generateOTP(gmail):
-  # create smtp session 
-  s = smtplib.SMTP("smtp.gmail.com" , 587)  # 587 is a port number
-  # start TLS for E-mail security 
-  s.starttls()
-  # Log in to your gmail account
-  s.login("digitalwalletsup@gmail.com" , "fjrmciddcazmyfut")
-  otp = random.randint(100000, 999999)
-  msg = f'''Subject : One time password for Digital Wallet 
+    # create smtp session 
+    s = smtplib.SMTP("smtp.gmail.com" , 587)  # 587 is a port number
+    # start TLS for E-mail security 
+    s.starttls()
+    # Log in to your gmail account
+    s.login("digitalwalletsup@gmail.com" , "fjrmciddcazmyfut")
+    otp = random.randint(100000, 999999)
+    msg = f'''Subject : One time password for Digital Wallet 
 
-  Thanks for using our digital wallet. Here is your One Time Password : {otp} '''
-          
-  s.sendmail("digitalwalletsup@gmail.com", gmail, msg)
-  # close smtp session
-  s.quit()
-  return otp
+    Thanks for using our digital wallet. Here is your One Time Password : {otp} '''
+            
+    s.sendmail("digitalwalletsup@gmail.com", gmail, msg)
+    # close smtp session
+    s.quit()
+    return otp
 
 def _build_cors_preflight_response():
     response = make_response()
@@ -266,7 +258,6 @@ def getWalletTransaction():
                 "ETH" : ETH.getTransactions(keys["ETHwif"], admin),
                 "BTC" : BTC.getTransactions(keys["BTCwif"], admin),
                 "XRP" : XRP.getTransactions(keys["XRPwif"], 5, client, admin),
-                "FIAT" : db.getFIATTransactions(),
             }
         return jsonify({"message" : "Retrieved", "result" : result}), 200
     else :
@@ -556,12 +547,12 @@ def transferNFT():
         try : 
             address = request.json["address"]
         except :
-            return jsonify({"message": "Missing Payee username"}), 400
+            return jsonify({"message": "Missing Smart Contract Address"}), 400
         
         try : 
-            amount = request.json["amount"]
+            id = request.json["id"]
         except :
-            return jsonify({"message": "Missing Payee username"}), 400
+            return jsonify({"message": "Missing NFT ID"}), 400
         
         uid_payee = db.lookup(pointer, to)
 
@@ -624,7 +615,7 @@ def transferTOK():
         try : 
             address = request.json["address"]
         except :
-            return jsonify({"message": "missing address"}), 400
+            return jsonify({"message": "missing Smart Contract Address"}), 400
         
         try : 
             value = request.json["value"]
@@ -726,10 +717,8 @@ if __name__ == "__main__" :
         application.config['SESSION_TYPE'] = 'filesystem'
         application.config['SESSION_COOKIE_SAMESITE'] = "None"
         application.config["SESSION_COOKIE_SECURE"] = True
-        # server_session.init_application(application)
         application.run()
-    except:
-        pass
-    finally:
+    except Exception as e:
         DB.close()
+        print(e)
         

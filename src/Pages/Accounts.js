@@ -100,15 +100,15 @@ const Accounts = () => {
                     <p style = {styles.CurrencyName}>Bitcoin</p>
                     <span style = {{...styles.Underline, ...BTC}}></span>
                 </Link>
-                <Link to = "/accounts/ETH" style = {styles.IconWrapper} onClick = {() => {HandleIconClick("ETH")}} >
-                    <img src = {Ethereum} style = {styles.Icon} alt = "Ethereum" />
-                    <p style = {styles.CurrencyName}>Ethereum</p>
-                    <span style = {{...styles.Underline, ...ETH}}></span>
-                </Link>
                 <Link to = "/accounts/XRP" style = {styles.IconWrapper} onClick = {() => {HandleIconClick("XRP")}} >
                     <img src = {Ripple} style = {styles.Icon} alt = "Ripple" />
                     <p style = {styles.CurrencyName}>Ripple</p>
                     <span style = {{...styles.Underline, ...XRP}}></span>
+                </Link>
+                <Link to = "/accounts/ETH" style = {styles.IconWrapper} onClick = {() => {HandleIconClick("ETH")}} >
+                    <img src = {Ethereum} style = {styles.Icon} alt = "Ethereum" />
+                    <p style = {styles.CurrencyName}>Ethereum</p>
+                    <span style = {{...styles.Underline, ...ETH}}></span>
                 </Link>
                 <Link to = "/accounts/NFT" style = {styles.IconWrapper} onClick = {() => {HandleIconClick("NFT")}} >
                     <img src = {NonFungibleToken} style = {styles.Icon} alt = "NFT" />
