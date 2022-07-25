@@ -1,10 +1,14 @@
 import React, { useState } from'react'
 import { useUserContext } from '../Context/UserContext'
 import Transfer from './Transfer'
+import FIL from "../assets/Icons/NFT placeholder/FIL.png"
+import Cafe from "../assets/Icons/NFT placeholder/Cafe.png"
+import IG from "../assets/Icons/NFT placeholder/IG.png"
+import TH from "../assets/Icons/NFT placeholder/TechHub.png"
 
 const Tokens = () => {
 
-    const {ETH, TOK, prices, transferTOK} = useUserContext()
+    const {ETH, TOK, prices, transferTOK, getTOK} = useUserContext()
     const [active, setActive] = useState({transform : "translateX(100%)", opacity : "0"})
     const [address, setAddress] = useState("")
 
@@ -82,16 +86,46 @@ const Tokens = () => {
             width : "15vw",
             height : "15vw",
         },
+        Refresh : {
+            fontSize : "2rem",
+            cursor : "pointer",
+            marginLeft : "0.4px",
+        }
+    }
+
+    const Images = {
+        0 : FIL,
+        1 : TH,
+        2 : IG,
+        3  : Cafe,
     }
 
     return(
         <>
             <div style = {styles.Container} >
                 <div style={styles.FlexContainer} >
-                    <p style = {styles.Balance} >{ETH?.balance} {"ETH"}</p>
-                    <p style = {styles.Value} >£{(prices?.ETH*ETH?.balance).toFixed(5)}</p>
-                    <div style = {styles.Address} onClick={() => {navigator.clipboard.writeText(ETH?.address)}} >
-                        <p>{`${ETH?.address?.slice(0, 10)}....${ETH?.address?.slice(ETH?.address?.length-4, ETH?.address?.length)}`}</p>
+                    <p style = {styles.Balance} >
+                        {
+                            ETH?.balance
+                            ? <div style = {{display : "flex"}} >{`${ETH.balance} ETH`} <ion-icon onClick = {getTOK} style = {styles.Refresh} name="refresh-circle-outline" /> </div>
+                            : "Loading..."
+                        }
+                    </p>
+                    <p style = {styles.Value} >
+                        {
+                            ETH?.balance && prices?.ETH 
+                            ? `£${(prices?.ETH*ETH?.balance).toFixed(5)}`
+                            : "Loading..."
+                        }
+                    </p>
+                    <div style = {styles.Address} onClick={() => {navigator.clipboard.writeText(address)}} >
+                        <p>
+                            {
+                                ETH?.address 
+                                ? ETH?.address.slice(0, 10) + "...." + ETH?.address.slice(ETH?.address.length-4, ETH?.address.length)
+                                : "Loading..."
+                            }
+                        </p>
                         <ion-icon name="copy-outline" style = {styles.Copy} />
                     </div>
                 </div>
@@ -99,7 +133,7 @@ const Tokens = () => {
                     {
                         TOK?.map((item, index) => (
                             <div key = {index} data-attribute = "asset-card" style = {styles.Card} >
-                                <a target = "_blank" rel="noreferrer" href = {`https://rinkeby.etherscan.io/token/${item.address}`} ><img src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMkAAADJCAMAAAC+GOY3AAAApVBMVEWCNYsQEhWudBMAcK7///9ksy7kIBz/2kX3phTDxMRAOzEhYaXqTDf5tzfs2VlrtFe/ejH96cX704r/9tH/7aLgzOLr3MT4x8aLxmLY7Mu/2+uAuNf5vE9AlMLrWFX/43T/8br6yGz82Jn/4Wj83qf7zXv/+vH4rCP4sTH/6Iv/31zk4dzw3sz25tzweGn+9OL+79T/5n//767w44KPx4Hi8Ocggri6wNcUAAACT0lEQVR4nO3Wi05TQRhF4aOiiFfKqVTxRhERVCxe3//RNFXgJM5WcXYyO5O1XuDfX9p0Omx10sZwrZO2kMSFJC8keSHJC0leSPJCkheSvJDkhSQvJHn1JLnTSe+G6520iyQuJHkhyQtJXkjyQpIXkryQ5IUkLySijf9vt/I0EhESi2TbWYXkfeXp0+GWswrJovL0Akk5JEgmIREhQTIJiQgJkklIRGLlC+uRckhESAwhESExhESExNBiuOdMSD5Yj5Q7HW47E5Jn1iPlZkjKITGERITEEBIREkP1kuXOJCE53Pl7y+aSmVh/1V73Ijl604vkoHpHiuS4F8lh7YwYSf3vdIhkVg1JkdQ+JjGSVT0kRFL7KsZIql/FGEn1q+iRHMwmialnsz92bID8kNx3JiRL65Fyq2HTmZC8tB4pNyIph8QQEhESQ0guO5lPEpL9ueqVA7GuXjKK9f/WWwfi5462kn2H4deOthLfl6uxZHQQznc0lXx0EM53tJSsHIKLHS0lJw7BxY6GkiPfT/BmW8ncAbjc0VBi/UhaSoyv4npHO4nxVVzvqJZ8GieJ0Wfj75k/Ev7Vq5pKHjgTks/WI+VWw01nQvLYeqTcEyTlkBhCIkJiCIkIiSEkIiSGkIiQGEIiQmIIiQiJISSippKHzoTki/VIua/DDWdC8tx6pNweknJIDCERITGERITEEBLR03LfrEfKmSUNQ5IXkryQ5IUkLyR59SS520l7Qy89aj3AFpK8kOSFJC8keSHJC0leSPJCkheSvJDkhSSvjiTfAQKQokPiVAHUAAAAAElFTkSuQmCC" alt = "FIL Token" style = {styles.NFTIMG} /></a>
+                                <a target = "_blank" rel="noreferrer" href = {`https://rinkeby.etherscan.io/token/${item.address}`} ><img src = {Images[index]} alt = "FIL Token" style = {styles.NFTIMG} /></a>
                                 <div style ={{textAlign : "center", cursor : "pointer"}} onClick = {e => {handeModalChange("open"); setAddress(item.address)}} >
                                     <p style = {{marginTop : "2rem", fontSize : "1.6rem"}}>{item.name}</p>
                                     <h2 style = {{fontSize : "2.6rem"}}>{item.symbol}</h2>

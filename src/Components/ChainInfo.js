@@ -80,7 +80,7 @@ const ChainInfo = ({currency, balance, value, address, refresh, txuri, adduri, h
                 </p>
                 <p style = {styles.Value} >
                     {
-                        value 
+                        !isNaN(value)
                         ? `£${value}`
                         : "Loading..."
                     }

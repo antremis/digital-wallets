@@ -9,6 +9,7 @@ import smtplib
 
 u1 = "2268b31c-2239-4280-9414-e98f166c94c0"
 u2 = "69906b1e-ddb4-471f-a2ee-6a435eaa879b"
+# Check if OTP works
 
 
 application = Flask(__name__, )
@@ -436,7 +437,7 @@ def getBtcHistory():
             if session.get("admin") :
                 admin = session["admin"]
             wif = db.getBTCKeys(pointer, session["uid"])
-            transactions = BTC.getTransactions(wif)
+            transactions = BTC.getTransactions(wif, admin)
             return jsonify({"message" : "Success", "tx_history" : transactions}), 200
         else :
             return jsonify({"message" : "No User logged in"}), 403

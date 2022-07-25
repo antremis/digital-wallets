@@ -3,6 +3,7 @@ import Axios from "../Axios/Axios"
 import { useAuthContext } from './AuthContext'
 import Loading from '../Components/Loading'
 import BaseUri from "./BaseUri"
+import Notification from '../Components/Notification'
 
 const UserContext = createContext()
 
@@ -17,6 +18,7 @@ const UserContextProvider = ({children}) => {
     const [prices, setPrices] = useState({})
     const [loading, setLoading] = useState(true)
     const [status, setStatus] = useState("")
+    const [err, setErr] = useState(false)
     const {user} = useAuthContext()
     const FIAT = {
         balance : 0,
@@ -77,6 +79,26 @@ const UserContextProvider = ({children}) => {
         setStatus("")
     }
     
+    const getTOK = async () => {
+        // setLoading(true)
+        setStatus("Getting User Tokens")
+        setTOK([])
+        const toks = await Axios.get(`${BaseUri}/api/tok/get`)
+        setTOK(toks.data.Tokens)
+        // setLoading(false)
+        setStatus("")
+    }
+    
+    const getNFT = async () => {
+        // setLoading(true)
+        setStatus("Getting User NFTs")
+        setNFT([])
+        const nft = await Axios.get(`${BaseUri}/api/nft/get`)
+        setNFT(nft.data.NFTs)
+        // setLoading(false)
+        setStatus("")
+    }
+    
     const getWallet = async () => {
         // setLoading(true)
         setStatus("Getting User NFTs")
@@ -104,6 +126,7 @@ const UserContextProvider = ({children}) => {
             address : balance.data.result.XRP.address,
             history : history.data.result.XRP,
         })
+        setStatus("")
         // setFIAT({
         //     balance : 1000,
         //     address : "ASDHM10231211",
@@ -115,30 +138,57 @@ const UserContextProvider = ({children}) => {
     const transfer = async (chain, to, value) => {
         // setLoading(true)
         setStatus(`Transferring ${chain.toUpperCase()}`)
-        window.alert(`Transferring ${chain.toUpperCase()}`)
-        const result = await Axios.post(`${BaseUri}/api/${chain}/transfer`, {to, value})
+        let result
+        try {
+            result = await Axios.post(`${BaseUri}/api/${chain}/transfer`, {to, value})
+            setStatus("Transfer Successful")
+        } catch(e){
+            setStatus(`Error Transferring ${chain.toUpperCase()}`)
+            setErr(true)
+        }
+        setTimeout(() => {
+            setStatus("")
+            setErr(false)
+        }, 2000);
         // setLoading(false)
-        setStatus("")
         return result
     }
 
     const transferTOK = async (to, value, address) => {
         // setLoading(true)
         setStatus(`Transferring Token`)
-        window.alert(`Transferring Token`)
-        const result = await Axios.post(`${BaseUri}/api/tok/transfer`, {to, value, address})
+        let result
+        try {
+            result = await Axios.post(`${BaseUri}/api/tok/transfer`, {to, value, address})
+            setStatus("Transfer Successful")
+        } catch(e){
+            setStatus(`Error Transferring Tokens`)
+            setErr(true)
+        }
+        setTimeout(() => {
+            setStatus("")
+            setErr(false)
+        }, 2000);
         // setLoading(false)
-        setStatus("")
         return result
     }
 
     const transferNFT = async (to, address, id) => {
         // setLoading(true)
         setStatus(`Transferring NFT`)
-        window.alert(`Transferring NFT`)
-        const result = await Axios.post(`${BaseUri}/api/nft/transfer`, {to, address, id})
+        let result
+        try {
+            result = await Axios.post(`${BaseUri}/api/nft/transfer`, {to, address, id})
+            setStatus("Transfer Successful")
+        } catch(e){
+            setStatus(`Error Transferring NFT#${id}`)
+            setErr(true)
+        }
+        setTimeout(() => {
+            setStatus("")
+            setErr(false)
+        }, 2000);
         // setLoading(false)
-        setStatus("")
         return result
     }
 
@@ -153,7 +203,6 @@ const UserContextProvider = ({children}) => {
     }, [user])
 
     useEffect(() => {
-        let api = ""
         const API_KEY = "C20F0724-64A3-47E4-913C-0B6E92426C48"
         let ticker
         if (user){
@@ -190,8 +239,9 @@ const UserContextProvider = ({children}) => {
     }, [user])
 
     return (
-        <UserContext.Provider value = {{status, FIAT, BTC, ETH, XRP, NFT, TOK, prices, getFIAT , getBTC, getETH, getXRP, transfer, transferTOK, transferNFT}}>
-            {loading ? <Loading text = {status} /> : children}
+        <UserContext.Provider value = {{status, FIAT, BTC, ETH, XRP, NFT, TOK, prices, getFIAT , getBTC, getETH, getXRP, getTOK, getNFT, transfer, transferTOK, transferNFT}}>
+            <Notification status = {status} err = {err} />
+            {loading ? <Loading status = {status} /> : children}
         </UserContext.Provider>
     )
 }

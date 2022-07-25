@@ -105,7 +105,7 @@ const Transfer = ({name, address, active, handeModalChange, transfer, hide_amoun
     }
 
     return(
-        <form style = {{...styles.FlexContainer, ...active}} onSubmit = {(e) => transfer(e, to, value)} >
+        <form style = {{...styles.FlexContainer, ...active}} onSubmit = {(e) => {transfer(e, to, value);handeModalChange("close")}} >
             <div style = {styles.Header} >
                 <p style = {styles.HeaderTitle} >Send</p>
                 <p style = {styles.HeaderText} >{name} Test Network</p>

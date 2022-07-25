@@ -4,7 +4,7 @@ import Transfer from './Transfer'
 
 const NFT = () => {
 
-    const {ETH, NFT, prices, transferNFT} = useUserContext()
+    const {ETH, NFT, prices, transferNFT, getNFT} = useUserContext()
     const [active, setActive] = useState({transform : "translateX(100%)", opacity : "0"})
     const [id, setID] = useState(null)
     const [address, setAddress] = useState(null)
@@ -85,19 +85,41 @@ const NFT = () => {
             width : "38vh",
             height : "38vh",
         },
+        Refresh : {
+            fontSize : "2rem",
+            cursor : "pointer",
+            marginLeft : "0.4px",
+        }
     }
 
     return(
         <>
             <div style = {styles.Container} >
                 <div style={styles.FlexContainer} >
-                    <p style = {styles.Balance} >{ETH?.balance} {"ETH"}</p>
-                    <p style = {styles.Value} >£{(prices?.ETH*ETH?.balance).toFixed(5)}</p>
-                    <div style = {styles.Address} onClick={() => {navigator.clipboard.writeText(ETH?.address)}} >
-                        <p>{`${ETH?.address?.slice(0, 10)}....${ETH?.address?.slice(ETH?.address?.length-4, ETH?.address?.length)}`}</p>
+                    <p style = {styles.Balance} >
+                        {
+                            ETH?.balance
+                            ? <div style = {{display : "flex"}} >{`${ETH.balance} ETH`} <ion-icon onClick = {getNFT} style = {styles.Refresh} name="refresh-circle-outline" /> </div>
+                            : "Loading..."
+                        }
+                    </p>
+                    <p style = {styles.Value} >
+                        {
+                            ETH?.balance && prices?.ETH 
+                            ? `£${(prices?.ETH*ETH?.balance).toFixed(5)}`
+                            : "Loading..."
+                        }
+                    </p>
+                    <div style = {styles.Address} onClick={() => {navigator.clipboard.writeText(address)}} >
+                        <p>
+                            {
+                                ETH?.address 
+                                ? ETH?.address.slice(0, 10) + "...." + ETH?.address.slice(ETH?.address.length-4, ETH?.address.length)
+                                : "Loading..."
+                            }
+                        </p>
                         <ion-icon name="copy-outline" style = {styles.Copy} />
                     </div>
-                    {/* <div style = {styles.Send} onClick = {() => handeModalChange("open")} >Send</div> */}
                 </div>
                 <div style = {styles.CardWrapper} >
                     {
@@ -115,18 +137,6 @@ const NFT = () => {
                                         <p style = {{marginBottom : "1vh", fontSize : "2rem"}}>8K ETH time</p>
                                     </div>
                                 </div>)
-                            // ?   (<a key = {index} data-attribute = "asset-card" style = {styles.Card} target = "_blank" rel="noreferrer" href = {item.permalink} >
-                            //         {
-                            //             item.image_url
-                            //             ? <div style = {{...styles.NFTIMG, backgroundImage : `url(${item.image_url})`, backgroundPosition : "center", backgroundSize : "cover"}} />
-                            //             : <div style = {{...styles.NFTIMG, backgroundImage : `url(https://emedicodiary.com/images/queimg/no-image-found.png)`, backgroundPosition : "center", backgroundSize : "cover"}} />
-                            //         }
-                            //         <div style = {{textAlign : "center"}} >
-                            //             <p style = {{marginTop : "1vh", fontSize : "1.6rem"}}>{item.name}</p>
-                            //             <h2 style = {{fontSize : "2.6rem"}}>{item.symbol} {`#${item.token_id}`}</h2>
-                            //             <p style = {{marginBottom : "1vh", fontSize : "2rem"}}>8K ETH time</p>
-                            //         </div>
-                            //     </a>)
                             : null
                         ))
                     }
