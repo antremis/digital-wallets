@@ -4,6 +4,9 @@ import { useAuthContext } from './AuthContext'
 import Loading from '../Components/Loading'
 import BaseUri from "./BaseUri"
 import Notification from '../Components/Notification'
+import Config from "config/config.json"
+import Success from "../assets/Icons/Status/Complete.svg"
+import Fail from "../assets/Icons/Status/Error.svg"
 
 const UserContext = createContext()
 
@@ -14,6 +17,7 @@ const UserContextProvider = ({children}) => {
     const [XRP, setXRP] = useState({balance : 0, history : [], address : ""})
     const [NFT, setNFT] = useState([])
     const [TOK, setTOK] = useState([])
+    const [img, setImg] = useState(null)
     // const [FIAT, setFIAT] = useState({balance : 0, history : []})
     const [prices, setPrices] = useState({})
     const [loading, setLoading] = useState(true)
@@ -203,7 +207,7 @@ const UserContextProvider = ({children}) => {
     }, [user])
 
     useEffect(() => {
-        const API_KEY = "C20F0724-64A3-47E4-913C-0B6E92426C48"
+        const API_KEY = Config["COINBASE_APKI_KEY"]
         let ticker
         if (user){
             let temp = {}
@@ -241,7 +245,8 @@ const UserContextProvider = ({children}) => {
     return (
         <UserContext.Provider value = {{status, FIAT, BTC, ETH, XRP, NFT, TOK, prices, getFIAT , getBTC, getETH, getXRP, getTOK, getNFT, transfer, transferTOK, transferNFT}}>
             <Notification status = {status} err = {err} />
-            {loading ? <Loading status = {status} /> : children}
+            {children}
+            {/* {loading ? <Loading status = {status} /> : children} */}
         </UserContext.Provider>
     )
 }

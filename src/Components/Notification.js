@@ -1,8 +1,6 @@
 import react, { useState, useEffect } from 'react'
-import Success from "../assets/Icons/Status/Complete.svg"
-import Fail from "../assets/Icons/Status/Error.svg"
 
-const Notification = ({status, err}) => {
+const Notification = ({status, img}) => {
 
     const styles ={
         Notification : {
@@ -36,10 +34,15 @@ const Notification = ({status, err}) => {
                 ? (
                     <div style = {styles.Notification}>
                         {
+                            img
+                            ?   <img style = {styles.IMG} src = {img} alt = "Notification" />
+                            :   null
+                        }
+                        {/* {
                             err
                             ? <img src = {Fail} alt = "Fail" style = {styles.IMG} />
                             : <img src = {Success} alt = "Success" style = {styles.IMG} />
-                        }
+                        } */}
                         <h1>{status}</h1>
                     </div>
                 )

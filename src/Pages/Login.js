@@ -103,7 +103,7 @@ const Login = () => {
         PasswordCheckWrapper : {
             fontWeight : "400",
             fontSize : "1rem",
-            border : "1px solid var(--clr-white-darker)",
+            border : "1px solid var(--clr-white-border)",
             margin : "0 0 2rem 0",
             padding : "2rem",
         },
@@ -171,7 +171,7 @@ const Login = () => {
                                 <li>At least one special character</li>
                             </ul>
                         </div>
-                        <button style = {styles.Login} type="submit" >Login</button>
+                        <button style = {styles.Login} type="submit" >Register</button>
                     </form>
                     <div style = {styles.OptionWrapper} >
                         <p>Already have an account? <span style = {styles.Underline} onClick = {() => handleFormChange("login")} >Login</span></p>

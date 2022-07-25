@@ -1,8 +1,8 @@
 import React, {useEffect, useState, useContext, createContext} from 'react'
 import Axios from '../Axios/Axios'
-import Loading from '../Components/Loading'
 import { useNavigate } from 'react-router-dom';
 import BaseUri from "./BaseUri"
+import Notification from '../Components/Notification';
 
 const AuthContext = createContext()
 
@@ -10,76 +10,67 @@ const AuthContextProvider = ({children}) => {
 
     const [user, setUser] = useState(null)
     const [admin, setAdmin] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [status, setStatus] = useState("")
     const navigate = useNavigate()
 
     const changeUser = async (username) => {
         setStatus("Getting ETH Balance")
-        setLoading(true)
         const response = await Axios.post(`${BaseUri}/api/admin/changeacc`, {username})
         setUser(response.data.user)
         setAdmin(response.data.user)
         setStatus("")
-        setLoading(false)
     }
 
     const handleLogin = async (email, password) => {
         setStatus("Loading User")
-        setLoading(true)
         return Axios
         .post(`${BaseUri}/api/auth/login`, {username : email, password})
-        .then(data => {setUser(data.data.user);setAdmin(data.data.admin)})
-        .catch(err => {window.alert(err.response.data.message)})
-        .finally(() => {setLoading(false);setStatus("Loading User");})
+        .then(data => {setUser(data.data.user);setAdmin(data.data.admin);setTimeout(() => {setStatus("")}, 1000)})
+        .catch(err => {setStatus(err.response.data.message); setTimeout(() => {setStatus("")}, 1000)})
     }
 
     const signOut = async (email, password) => {
         setStatus("Signing Out")
-        setLoading(true)
         return Axios
         .get(`${BaseUri}/api/auth/logout`)
-        .then(data => {setUser(data.data.user)})
-        .catch(err => {return err.response.data.message})
-        .finally(() => {setLoading(false);setStatus("Loading User");})
+        .then(data => {setUser(data.data.user);setTimeout(() => {setStatus("")}, 1000)})
+        .catch(err => {setStatus(err.response.data.message); setTimeout(() => {setStatus("")}, 1000)})
     }
 
     const handleSignup = async (email, password, recoveryPassword) => {
         setStatus("Creating User")
-        setLoading(true)
         return Axios
         .post(`${BaseUri}/api/auth/signup`, {username : email, password, recoveryPassword})
-        .then(data => {setUser(data.data.user)})
-        .catch(err => {return err.response.data.message})
-        .finally(() => {setLoading(false);setStatus("Loading User");})
+        .then(data => {setTimeout(() => {setStatus("")}, 1000)})
+        .catch(err => {setStatus(err.response.data.message); setTimeout(() => {setStatus("")}, 1000)})
     }
     
     const validateOTP = async (otp) => {
         return Axios
         .post(`${BaseUri}/api/auth/validate`, {otp})
-        .then(data => {console.log(data)})
-        .catch(err => {return err.response.data.message})
+        .then(data => {console.log(data);setTimeout(() => {setStatus("")}, 1000)})
+        .catch(err => {setStatus(err.response.data.message); setTimeout(() => {setStatus("")}, 1000)})
     }
     
     const getOTP = async (email) => {
         return Axios
         .post(`${BaseUri}/api/auth/getotp`, {email})
-        .then(data => {console.log(data)})
-        .catch(err => {return err.response.data.message})
+        .then(data => {console.log(data);setTimeout(() => {setStatus("")}, 1000)})
+        .catch(err => {setStatus(err.response.data.message); setTimeout(() => {setStatus("")}, 1000)})
     }
     
     const resetPassword = async (password) => {
         return Axios
         .post(`${BaseUri}/api/auth/reset`, {password})
-        .then(data => {console.log(data)})
-        .catch(err => {return err.response.data.message})
+        .then(data => {console.log(data);setTimeout(() => {setStatus("")}, 1000)})
+        .catch(err => {setStatus(err.response.data.message); setTimeout(() => {setStatus("")}, 1000)})
     }
     
     useEffect(() => {
         Axios
         .get(`${BaseUri}/api/auth/getUser`)
-        .then(res => {setUser(res.data.user);setAdmin(res.data.admin)})
-        .catch(err => console.log(err))
+        .then(res => {setUser(res.data.user);setAdmin(res.data.admin);setTimeout(() => {setStatus("")}, 1000)})
+        .catch(err => {setStatus("Server Unavailable"); setTimeout(() => {setStatus("")}, 1000)})
     }, [])
 
     useEffect(() => {
@@ -90,7 +81,8 @@ const AuthContextProvider = ({children}) => {
 
     return (
         <AuthContext.Provider value = {{user, admin, changeUser, handleLogin, signOut, handleSignup, getOTP, validateOTP, resetPassword}}>
-            {loading ? <Loading text = {status} /> : children}
+            {<Notification status = {status} />}
+            {children}
         </AuthContext.Provider> 
     )
 }
